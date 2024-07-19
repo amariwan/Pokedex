@@ -1,13 +1,12 @@
-import "./globals.css";
-import { Inter } from "next/font/google";
+import "@/styles/globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import Link from "next/link";
-
-const inter = Inter({ subsets: ["latin"] });
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export const metadata = {
   title: "Pokédex App",
-  description: "A Pokédex app built using Next.js that displays over 800 different Pokemons with their complete details.",
+  description:
+    "Explore over 800 Pokémon with detailed information in our beautifully designed Pokédex app.",
 };
 
 export default function RootLayout({
@@ -17,16 +16,28 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className="bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300">
         <ThemeProvider attribute="class" defaultTheme="dark">
-          <main className="flex min-h-screen flex-col items-center p-24">
-            <div className="z-10 w-full max-w-5xl items-center justify-between text-sm lg:flex">
+          <header className="shadow-md">
+            <nav className="container mx-auto flex justify-between items-center py-4 px-6">
               <Link href="/">
-                <h2 className="text-2xl text-bold">Pokédex</h2>
+                <h1 className="text-4xl font-extrabold hover:underline">Pokédex</h1>
               </Link>
-            </div>
-            {children}
+              <ul className="flex space-x-4 text-lg">
+                <li>
+                  <ThemeToggle /> {/* Use the client-side theme toggle component */}
+                </li>
+              </ul>
+            </nav>
+          </header>
+          <main className="flex min-h-screen flex-col items-center p-6">
+            <div className="container mx-auto">{children}</div>
           </main>
+          <footer className=" py-6">
+            <div className="container mx-auto text-center">
+              <p>&copy; 2024 Pokédex App. All rights reserved. Created by Aland Mariwan</p>
+            </div>
+          </footer>
         </ThemeProvider>
       </body>
     </html>
