@@ -2,8 +2,7 @@ import React from 'react';
 import MainNav from '@/src/components/main-nav';
 import { CommandSearch } from './command-search';
 import { Icons } from './icons';
-import { ThemeToggle } from './ThemeToggle';
-
+import { ModeToggle } from '@/src/components/ThemeToggle';
 type Props = {};
 
 export default function SiteHeader({}: Props) {
@@ -15,7 +14,7 @@ export default function SiteHeader({}: Props) {
 					<div className='w-full flex-1 md:w-auto md:flex-none'>
 						<CommandSearch />
 					</div>
-					<ThemeToggle />
+					<ModeToggle />
 					<a href={'https://github.com/amariwan'} target='_blank' rel='noreferrer' aria-label='github link' className='font-medium underline underline-offset-4 hover:opacity-30'>
 						<Icons.gitHub className=' h-6 w-6 md:inline-block' />
 					</a>
