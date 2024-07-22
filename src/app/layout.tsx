@@ -1,8 +1,8 @@
-import '@/src/styles/globals.css';
-import { ThemeProvider } from '@/src/components/theme-provider';
-import { Footer } from '@/src/components/Footer';
-import SiteHeader from '@/src/components/site-header';
-import QueryProvider from '@/src/components/query-provider';
+import '@/styles/globals.css';
+import { ThemeProvider } from '@/components/theme-provider';
+import { Footer } from '@/components/Footer';
+import SiteHeader from '@/components/site-header';
+import QueryProvider from '@/components/query-provider';
 
 export const metadata = {
 	title: 'Pokédex App',

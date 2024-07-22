@@ -1,11 +1,11 @@
 import React, { Suspense } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card';
-import { AnimatedValue } from '@/src/components/animated-value';
-import { StatsBar } from '@/src/components/stats-bar';
-import { PokemonData } from '@/src/types';
-import { capitalize } from '@/src/lib/utils';
-import { Badge } from '@/src/components/ui/badge';
-import { Separator } from '@/src/components/ui/separator';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { AnimatedValue } from '@/components/animated-value';
+import { StatsBar } from '@/components/stats-bar';
+import { PokemonData } from '@/types';
+import { capitalize } from '@/lib/utils';
+import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
 
 type Props = {
 	pokemonData: PokemonData;

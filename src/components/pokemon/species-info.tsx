@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { useGetSpeciesInfo } from '@/src/hooks/use-pokeapi';
-import { capitalize } from '@/src/lib/utils';
-import { Props, FlavorTextEntry, LanguageOption } from '@/src/types';
-import { RatioBar } from '@/src/components/ratio-bar';
+import { useGetSpeciesInfo } from '@/hooks/use-pokeapi';
+import { capitalize } from '@/lib/utils';
+import { Props, FlavorTextEntry, LanguageOption } from '@/types';
+import { RatioBar } from '@/components/ratio-bar';
 import { Separator } from '@radix-ui/react-separator';
-import Loading from '@/src/components/loading';
+import Loading from '@/components/loading';
 
 export default function SpeciesInfo({ pokemonData }: Props) {
 	const [selectedLanguage, setSelectedLanguage] = useState<string>('en');

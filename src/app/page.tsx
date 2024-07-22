@@ -1,6 +1,6 @@
 // app/page.tsx
-import { PokemonGrid } from '@/src/components/PokemonGrid';
-import { getPokemonList, getAllPokemonNames } from '@/src/lib/pokemonAPI';
+import { PokemonGrid } from '@/components/PokemonGrid';
+import { getPokemonList, getAllPokemonNames } from '@/lib/pokemonAPI';
 
 const Page = async () => {
 	const pokemonList = await getPokemonList();

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { cn } from '@/src/lib/utils'; // Stellen Sie sicher, dass dieser Import korrekt ist
+import { cn } from '@/lib/utils'; // Stellen Sie sicher, dass dieser Import korrekt ist
 
 interface BackgroundGradientProps {
 	children?: React.ReactNode;

@@ -1,5 +1,5 @@
-import PokemonDetails from '@/src/components/pokemon/pokemon-details';
-import { Button } from '@/src/components/ui/button';
+import PokemonDetails from '@/components/pokemon/pokemon-details';
+import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 
 export default function Page({ params }: { params: { slug: string } }) {

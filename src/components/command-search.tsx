@@ -1,10 +1,10 @@
 'use client';
-import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/src/components/ui/command';
+import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
 import { useCallback, useEffect, useState } from 'react';
-import { PokemonSearchData } from '@/src/lib/data/pokemon-search';
+import { PokemonSearchData } from '@/lib/data/pokemon-search';
 import { useRouter } from 'next/navigation';
-import { Button } from '@/src/components/ui/button';
-import { capitalize, cn } from '@/src/lib/utils';
+import { Button } from '@/components/ui/button';
+import { capitalize, cn } from '@/lib/utils';
 import { DialogProps } from '@radix-ui/react-dialog';
 
 export function CommandSearch({ ...props }: DialogProps) {

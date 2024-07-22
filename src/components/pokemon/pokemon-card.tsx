@@ -1,8 +1,8 @@
 import React, { Suspense } from 'react';
 
 import Link from 'next/link';
-import { capitalize } from '@/src/lib/utils';
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card';
+import { capitalize } from '@/lib/utils';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 type Props = {
 	pokemonName: string;

@@ -1,6 +1,6 @@
 'use client';
 
-import { PlaceholdersAndVanishInput } from '@/src/components/ui/placeholders-and-vanish-input';
+import { PlaceholdersAndVanishInput } from '@/components/ui/placeholders-and-vanish-input';
 import { Label } from './ui/label';
 import { Input } from './ui/input';
 

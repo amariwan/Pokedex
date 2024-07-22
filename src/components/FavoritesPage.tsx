@@ -5,7 +5,7 @@ import { Label } from './ui/label';
 import { Input } from './ui/input';
 import { PokemonCard } from './PokemonCard';
 import ErrorMessage from './ErrorMessage';
-import { getPokemon } from '@/src/lib/pokemonAPI';
+import { getPokemon } from '@/lib/pokemonAPI';
 
 interface Pokemon {
 	id: number;
@@ -30,7 +30,7 @@ export const FavoritesPage = () => {
 	useEffect(() => {
 		const fetchFavorites = async () => {
 			try {
-				const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+				const favorites = JSON.parse(localStorage.getItem('favorites') ?? '[]');
 				setFavorites(favorites);
 
 				const data = await Promise.all(

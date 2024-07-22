@@ -1,22 +1,10 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
-import { getPokemon } from '@/src/lib/pokemonAPI';
-import Tooltip from '@/src/components/Tooltip';
+import { getPokemon } from '@/lib/pokemonAPI';
+import Tooltip from '@/components/Tooltip';
 import { Icons } from './icons';
-
-// Define type for Pokémon object
-interface Pokemon {
-	name: string;
-	sprites: {
-		other: {
-			'official-artwork': {
-				front_default: string;
-			};
-		};
-	};
-	types: Array<{ type: { name: string } }>;
-}
+import { Pokemon, PokemonCardProps } from '@/types';
 
 const typeColors: Record<string, { bg: string; text: string }> = {
 	grass: { bg: 'bg-green-500', text: 'text-white' },
@@ -39,11 +27,6 @@ const typeColors: Record<string, { bg: string; text: string }> = {
 	unknown: { bg: 'bg-gray-300', text: 'text-gray-800' },
 	shadow: { bg: 'bg-black', text: 'text-gray-100' },
 };
-
-interface PokemonCardProps {
-	name: string;
-}
-
 export const PokemonCard = ({ name }: PokemonCardProps) => {
 	const [pokemonObject, setPokemonObject] = useState<Pokemon | null>(null);
 	const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -56,7 +39,7 @@ export const PokemonCard = ({ name }: PokemonCardProps) => {
 			setPokemonObject(data);
 			setIsLoading(false);
 
-			const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+			const favorites = JSON.parse(localStorage.getItem('favorites') ?? '[]');
 			setIsFavorite(favorites.includes(name));
 		};
 
@@ -64,7 +47,7 @@ export const PokemonCard = ({ name }: PokemonCardProps) => {
 	}, [name]);
 
 	const addFavorite = () => {
-		const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+		const favorites = JSON.parse(localStorage.getItem('favorites') ?? '[]');
 		if (!favorites.includes(name)) {
 			favorites.push(name);
 			localStorage.setItem('favorites', JSON.stringify(favorites));
@@ -73,7 +56,7 @@ export const PokemonCard = ({ name }: PokemonCardProps) => {
 	};
 
 	const removeFavorite = () => {
-		const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+		const favorites = JSON.parse(localStorage.getItem('favorites') ?? '[]');
 		const newFavorites = favorites.filter((favorite: string) => favorite !== name);
 		localStorage.setItem('favorites', JSON.stringify(newFavorites));
 		setIsFavorite(false);

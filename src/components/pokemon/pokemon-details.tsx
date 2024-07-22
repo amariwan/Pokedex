@@ -2,8 +2,8 @@
 import PokedataCard from './pokedata-card';
 import SpeciesInfo from './species-info';
 import { Suspense } from 'react';
-import Loading from '@/src/components/loading';
-import { findPokemonDBImage, useGetPokemon } from '@/src/hooks/use-pokeapi';
+import Loading from '@/components/loading';
+import { findPokemonDBImage, useGetPokemon } from '@/hooks/use-pokeapi';
 
 type Props = {
 	pokemonName: string;

@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { PokemonCard } from './PokemonCard';
 import { SearchBar } from './SearchBar';
 import { ViewModeToggle } from './ViewModeToggle';
-import { Pokemon, PokemonName } from '@/src/types';
+import { Pokemon, PokemonName } from '@/types';
 
 interface PokemonGridProps {
 	pokemonList: Pokemon[];
@@ -26,7 +26,7 @@ export const PokemonGrid = ({ pokemonList, pokemonNameList }: PokemonGridProps) 
 	useEffect(() => {
 		if (viewMode === 'favorites') {
 			try {
-				const favoritesList = JSON.parse(localStorage.getItem('favorites') || '[]');
+				const favoritesList = JSON.parse(localStorage.getItem('favorites') ?? '[]');
 				setFavorites(favoritesList.map((name: string) => ({ name })));
 			} catch (err) {
 				console.error('Error fetching favorites:', err);

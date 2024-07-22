@@ -1,5 +1,5 @@
 'use client';
-import { PokemonData, PokemonType, SpeciesInfo } from '@/src/types';
+import { PokemonData, PokemonType, SpeciesInfo } from '@/types';
 import { useQuery, QueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 
