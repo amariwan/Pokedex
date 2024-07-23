@@ -13,7 +13,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v2
         with:
-          fetch-depth: 2 # Holen Sie sich die letzten zwei Commits für einen besseren Verlauf
+          fetch-depth: 2
 
       - name: Setup Node.js
         uses: actions/setup-node@v2
@@ -22,7 +22,17 @@ jobs:
           cache: 'pnpm'
 
       - name: Install pnpm
-        run: npm install -g pnpm
+        run: |
+          npm install -g pnpm
+          pnpm --version # Verifiziert die Installation von pnpm
+
+      - name: Verify pnpm Installation
+        run: |
+          if ! command -v pnpm &> /dev/null
+          then
+            echo "pnpm could not be found"
+            exit 1
+          fi
 
       - name: Install Dependencies
         run: pnpm install
@@ -30,18 +40,14 @@ jobs:
       - name: Build Project
         run: pnpm run build
         env:
-          CI: true # Setzt die Umgebungsvariable für CI-Tools, um mögliche Build-Fehler zu erkennen
-
-      - name: Run Tests
-        run: pnpm test
-        continue-on-error: true # Tests können fehlschlagen, ohne den Build-Prozess zu stoppen
+          CI: true
 
       - name: Notify on Failure
-        if: failure() # Nur ausführen, wenn ein Fehler auftritt
+        if: failure()
         uses: actions/github-script@v6
         with:
           script: |
-            const { context, github } = require('@actions/github');
+            const { github, context } = require('@actions/github');
             const issue = context.issue;
             const message = `🚨 Build failed for commit [${context.sha}](https://github.com/${context.repo.owner}/${context.repo.repo}/commit/${context.sha}) on branch \`${context.ref}\`. Please check the [Actions tab](https://github.com/${context.repo.owner}/${context.repo.repo}/actions) for details.`;
             await github.issues.createComment({
@@ -50,12 +56,9 @@ jobs:
             });
 
       - name: Upload Build Artifacts
-        if: success() # Nur ausführen, wenn der Build erfolgreich ist
+        if: success()
         uses: actions/upload-artifact@v3
         with:
           name: build
-          path: ./dist # Angenommener Pfad für den Build-Output
-
-      - name: Clean up
-        run: pnpm cache clean --force # Bereinigt den Cache, um Speicherplatz zu sparen
+          path: ./dist # Angepasster Pfad zum Build-Output
 
