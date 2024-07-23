@@ -1,4 +1,4 @@
-name: Build
+name: Build and Deploy
 
 on:
   pull_request:
@@ -10,20 +10,52 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout Code
         uses: actions/checkout@v2
-      # https://github.com/actions/setup-node
-      - name: Node Setup
+        with:
+          fetch-depth: 2 # Holen Sie sich die letzten zwei Commits für einen besseren Verlauf
+
+      - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
           node-version: 'lts/*'
-          cache: pnpm
-          
-      - name: Install  
+          cache: 'pnpm'
+
+      - name: Install pnpm
         run: npm install -g pnpm
-        
-      - name: Install yarn
-        run: pnpm install 
-      
-      - name: Build
+
+      - name: Install Dependencies
+        run: pnpm install
+
+      - name: Build Project
         run: pnpm run build
+        env:
+          CI: true # Setzt die Umgebungsvariable für CI-Tools, um mögliche Build-Fehler zu erkennen
+
+      - name: Run Tests
+        run: pnpm test
+        continue-on-error: true # Tests können fehlschlagen, ohne den Build-Prozess zu stoppen
+
+      - name: Notify on Failure
+        if: failure() # Nur ausführen, wenn ein Fehler auftritt
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const { context, github } = require('@actions/github');
+            const issue = context.issue;
+            const message = `🚨 Build failed for commit [${context.sha}](https://github.com/${context.repo.owner}/${context.repo.repo}/commit/${context.sha}) on branch \`${context.ref}\`. Please check the [Actions tab](https://github.com/${context.repo.owner}/${context.repo.repo}/actions) for details.`;
+            await github.issues.createComment({
+              ...issue,
+              body: message,
+            });
+
+      - name: Upload Build Artifacts
+        if: success() # Nur ausführen, wenn der Build erfolgreich ist
+        uses: actions/upload-artifact@v3
+        with:
+          name: build
+          path: ./dist # Angenommener Pfad für den Build-Output
+
+      - name: Clean up
+        run: pnpm cache clean --force # Bereinigt den Cache, um Speicherplatz zu sparen
+
