@@ -178,15 +178,43 @@ interface PokemonImageProps {
 	className?: string;
 }
 
-type FlavorTextEntry = {
+interface FlavorTextEntry {
 	flavor_text: string;
 	language: {
 		name: string;
-		url: string;
 	};
-};
+}
 
-type LanguageOption = {
+interface EggGroup {
+	name: string;
+}
+
+interface Color {
+	name: string;
+}
+
+interface SpeciesInfoX {
+	flavor_text_entries: FlavorTextEntry[];
+	color: Color | null;
+	egg_groups: EggGroup[];
+	gender_rate: number;
+	capture_rate: number;
+}
+
+interface SpeciesInfoProps {
+	pokemonData: {
+		species: {
+			url: string;
+		};
+		abilities: {
+			ability: {
+				name: string;
+			};
+		}[];
+	};
+}
+
+interface LanguageOption {
 	value: string;
 	label: string;
-};
+}

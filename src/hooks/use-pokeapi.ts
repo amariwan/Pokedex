@@ -1,5 +1,5 @@
 'use client';
-import { PokemonData, PokemonType, SpeciesInfo } from '@/types';
+import { PokemonData, SpeciesInfo } from '@/types';
 import { useQuery, QueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 
@@ -26,7 +26,7 @@ export const useGetPokemon = (pokemonName: string) => {
 };
 
 export const useGetPokemonType = (pokemonName: string) => {
-	return useQuery<PokemonType[]>({
+	return useQuery<SpeciesInfo[]>({
 		queryKey: ['pokemonType'],
 		queryFn: async () => {
 			const { data } = await axios.get(`https://pokeapi.co/api/v2/pokemon/${pokemonName}`);
@@ -92,14 +92,3 @@ export const useGetSpeciesInfo = (url: string) => {
 			} || {}),
 	});
 };
-
-//TODO: wip hook
-// export async function fetchData(params: string) {
-//   const { data: pokemonData, isLoading: isLoadingPokemon } = await getPokemon(
-//     params
-//   );
-//   const { data: speciesInfo, isLoading: isLoadingInfo } = await getSpeciesInfo(
-//     pokemonData!.species.url
-//   );
-//   return { pokemonData, speciesInfo, isLoadingPokemon, isLoadingInfo };
-// }
