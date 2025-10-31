@@ -104,7 +104,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node: ["24.x"]
+        node: ['24.x']
     steps:
       - name: Checkout
         uses: actions/checkout@v4
