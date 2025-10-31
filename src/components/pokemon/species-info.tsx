@@ -8,11 +8,7 @@ import { buildEvolutionStages, formatEvolutionDetail } from '@/lib/evolution-hel
 import { formatLabel, sanitizeFlavorText } from '@/lib/formatters';
 import { typeGradient } from '@/lib/pokemon-theme';
 import { capitalize } from '@/lib/utils';
-import {
-    FlavorTextEntry,
-    LanguageOption,
-    SpeciesInfoProps,
-} from '@/types';
+import { type FlavorTextEntry, type LanguageOption, type SpeciesInfoProps } from '@/types';
 
 export default function SpeciesInfo({ pokemonData, accentType }: SpeciesInfoProps) {
 	const [selectedLanguage, setSelectedLanguage] = useState<string>('en');
@@ -20,27 +16,30 @@ export default function SpeciesInfo({ pokemonData, accentType }: SpeciesInfoProp
 	const evolutionChainUrl = speciesInfo?.evolution_chain?.url ?? '';
 	const { data: evolutionChain } = useGetEvolutionChain(evolutionChainUrl);
 
-	const flavor_text_entries: FlavorTextEntry[] = speciesInfo?.flavor_text_entries ?? [];
+	const flavorTextEntries = useMemo<FlavorTextEntry[]>(
+		() => speciesInfo?.flavor_text_entries ?? [],
+		[speciesInfo],
+	);
 
 	const languageOptions = useMemo<LanguageOption[]>(() => {
 		const uniqueLanguages = Array.from(
-			new Set(flavor_text_entries.map((text: FlavorTextEntry) => text.language.name)),
+			new Set(flavorTextEntries.map((text: FlavorTextEntry) => text.language.name)),
 		);
 		return uniqueLanguages.map((lang) => ({
 			value: lang,
 			label: lang.toUpperCase(),
 		}));
-	}, [flavor_text_entries]);
+	}, [flavorTextEntries]);
 
 	const flavorTextMap = useMemo(
 		() =>
 			new Map(
-				flavor_text_entries.map((text: FlavorTextEntry) => [
+				flavorTextEntries.map((text: FlavorTextEntry) => [
 					text.language.name,
 					sanitizeFlavorText(text.flavor_text),
 				]),
 			),
-		[flavor_text_entries],
+		[flavorTextEntries],
 	);
 
 	const getFlavorText = (language: string) =>
@@ -66,22 +65,22 @@ export default function SpeciesInfo({ pokemonData, accentType }: SpeciesInfoProp
 	const catchRate = useMemo(() => {
 		if (!speciesInfo?.capture_rate) return null;
 		return Math.round((speciesInfo.capture_rate / 255) * 100);
-	}, [speciesInfo?.capture_rate]);
+	}, [speciesInfo]);
 
 	const hatchSteps = useMemo(() => {
 		if (speciesInfo?.hatch_counter === undefined) return null;
 		return (speciesInfo.hatch_counter + 1) * 255;
-	}, [speciesInfo?.hatch_counter]);
+	}, [speciesInfo]);
 
 	const eggGroups = speciesInfo?.egg_groups ?? [];
 	const evolutionStages = useMemo(
 		() => buildEvolutionStages(evolutionChain?.chain),
-		[evolutionChain?.chain],
+		[evolutionChain],
 	);
 
 	const alternateForms = useMemo(
 		() => speciesInfo?.varieties?.filter((variant) => !variant.is_default) ?? [],
-		[speciesInfo?.varieties],
+		[speciesInfo],
 	);
 
 	const accentGradient = typeGradient(accentType);
@@ -96,9 +95,9 @@ export default function SpeciesInfo({ pokemonData, accentType }: SpeciesInfoProp
 
 	return (
 		<section className='flex flex-col gap-6'>
-			<article className='relative overflow-hidden rounded-3xl border border-white/10 bg-slate-950/70 p-6 md:p-8 backdrop-blur-xl'>
+			<article className='relative overflow-hidden rounded-3xl border border-white/10 bg-slate-950/70 p-6 backdrop-blur-xl md:p-8'>
 				<div className={`absolute inset-0 bg-gradient-to-br ${accentGradient} opacity-45`} />
-				<div className='pointer-events-none absolute -left-24 top-16 h-60 w-60 rounded-full bg-white/10 blur-3xl' />
+				<div className='pointer-events-none absolute top-16 -left-24 h-60 w-60 rounded-full bg-white/10 blur-3xl' />
 				<div className='pointer-events-none absolute -right-10 bottom-4 h-48 w-48 rounded-full bg-white/10 blur-3xl' />
 
 				<div className='relative space-y-6'>
@@ -107,7 +106,7 @@ export default function SpeciesInfo({ pokemonData, accentType }: SpeciesInfoProp
 							{(statuses.length ? statuses : ['Research Grade']).map((status) => (
 								<span
 									key={status}
-									className='inline-flex items-center rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-white/80 backdrop-blur'
+									className='inline-flex items-center rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-semibold tracking-[0.3em] text-white/80 uppercase backdrop-blur'
 								>
 									{status}
 								</span>
@@ -118,7 +117,7 @@ export default function SpeciesInfo({ pokemonData, accentType }: SpeciesInfoProp
 							<select
 								value={selectedLanguage}
 								onChange={(e) => setSelectedLanguage(e.target.value)}
-								className='rounded-full border border-white/25 bg-white/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.35em] text-white/70 backdrop-blur transition focus:outline-none focus:ring-2 focus:ring-white/50'
+								className='rounded-full border border-white/25 bg-white/10 px-4 py-2 text-xs font-semibold tracking-[0.35em] text-white/70 uppercase backdrop-blur transition focus:ring-2 focus:ring-white/50 focus:outline-none'
 							>
 								{languageOptions.map((lang) => (
 									<option key={lang.value} value={lang.value} className='bg-slate-900 text-white'>
@@ -130,45 +129,53 @@ export default function SpeciesInfo({ pokemonData, accentType }: SpeciesInfoProp
 					</header>
 
 					<div className='space-y-3'>
-						<p className='text-sm uppercase tracking-[0.45em] text-white/60'>{genus || 'Pokémon species'}</p>
-						<p className='text-base leading-relaxed text-white/80'>{getFlavorText(selectedLanguage)}</p>
+						<p className='text-sm tracking-[0.45em] text-white/60 uppercase'>
+							{genus || 'Pokémon species'}
+						</p>
+						<p className='text-base leading-relaxed text-white/80'>
+							{getFlavorText(selectedLanguage)}
+						</p>
 					</div>
 				</div>
 			</article>
 
 			<div className='grid gap-6 md:grid-cols-2'>
 				<article className='rounded-3xl border border-white/10 bg-slate-950/60 p-6 backdrop-blur'>
-					<h3 className='text-sm uppercase tracking-[0.35em] text-white/60'>Training Data</h3>
+					<h3 className='text-sm tracking-[0.35em] text-white/60 uppercase'>Training Data</h3>
 					<dl className='mt-5 grid grid-cols-2 gap-4 text-sm text-white/80'>
 						<div>
-							<dt className='text-xs uppercase tracking-[0.3em] text-white/50'>Capture Rate</dt>
+							<dt className='text-xs tracking-[0.3em] text-white/50 uppercase'>Capture Rate</dt>
 							<dd className='mt-1 text-lg font-semibold text-white'>
 								{catchRate !== null ? `${catchRate}%` : '—'}
 							</dd>
 							{speciesInfo.capture_rate ? (
-								<p className='text-[11px] uppercase tracking-[0.35em] text-white/50'>
+								<p className='text-[11px] tracking-[0.35em] text-white/50 uppercase'>
 									{speciesInfo.capture_rate} / 255
 								</p>
 							) : null}
 						</div>
 						<div>
-							<dt className='text-xs uppercase tracking-[0.3em] text-white/50'>Base Happiness</dt>
+							<dt className='text-xs tracking-[0.3em] text-white/50 uppercase'>Base Happiness</dt>
 							<dd className='mt-1 text-lg font-semibold text-white'>
 								{speciesInfo.base_happiness ?? '—'}
 							</dd>
-							<p className='text-[11px] uppercase tracking-[0.35em] text-white/50'>Higher is friendlier</p>
+							<p className='text-[11px] tracking-[0.35em] text-white/50 uppercase'>
+								Higher is friendlier
+							</p>
 						</div>
 						<div>
-							<dt className='text-xs uppercase tracking-[0.3em] text-white/50'>Growth Rate</dt>
+							<dt className='text-xs tracking-[0.3em] text-white/50 uppercase'>Growth Rate</dt>
 							<dd className='mt-1 text-lg font-semibold text-white'>
 								{formatLabel(speciesInfo.growth_rate?.name)}
 							</dd>
-							<p className='text-[11px] uppercase tracking-[0.35em] text-white/50'>EXP scaling profile</p>
+							<p className='text-[11px] tracking-[0.35em] text-white/50 uppercase'>
+								EXP scaling profile
+							</p>
 						</div>
 						<div>
-							<dt className='text-xs uppercase tracking-[0.3em] text-white/50'>Hatch Steps</dt>
+							<dt className='text-xs tracking-[0.3em] text-white/50 uppercase'>Hatch Steps</dt>
 							<dd className='mt-1 text-lg font-semibold text-white'>{hatchSteps ?? '—'}</dd>
-							<p className='text-[11px] uppercase tracking-[0.35em] text-white/50'>
+							<p className='text-[11px] tracking-[0.35em] text-white/50 uppercase'>
 								{speciesInfo.hatch_counter !== undefined
 									? `${speciesInfo.hatch_counter + 1} cycles`
 									: 'Uncertain'}
@@ -178,24 +185,26 @@ export default function SpeciesInfo({ pokemonData, accentType }: SpeciesInfoProp
 				</article>
 
 				<article className='rounded-3xl border border-white/10 bg-slate-950/60 p-6 backdrop-blur'>
-					<h3 className='text-sm uppercase tracking-[0.35em] text-white/60'>Biology & Habitat</h3>
+					<h3 className='text-sm tracking-[0.35em] text-white/60 uppercase'>Biology & Habitat</h3>
 
 					<div className='mt-5 flex flex-col gap-5'>
 						<div>
-							<p className='text-xs uppercase tracking-[0.3em] text-white/50'>Gender Distribution</p>
+							<p className='text-xs tracking-[0.3em] text-white/50 uppercase'>
+								Gender Distribution
+							</p>
 							<div className='mt-2'>
 								<RatioBar value={speciesInfo.gender_rate} />
 							</div>
 						</div>
 
 						<div>
-							<p className='text-xs uppercase tracking-[0.3em] text-white/50'>Egg Groups</p>
+							<p className='text-xs tracking-[0.3em] text-white/50 uppercase'>Egg Groups</p>
 							<div className='mt-2 flex flex-wrap gap-2'>
 								{eggGroups.length ? (
 									eggGroups.map((group) => (
 										<span
 											key={group.name}
-											className='inline-flex items-center rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs uppercase tracking-[0.35em] text-white/75'
+											className='inline-flex items-center rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs tracking-[0.35em] text-white/75 uppercase'
 										>
 											{formatLabel(group.name)}
 										</span>
@@ -208,19 +217,19 @@ export default function SpeciesInfo({ pokemonData, accentType }: SpeciesInfoProp
 
 						<dl className='grid grid-cols-2 gap-4 text-sm text-white/80'>
 							<div>
-								<dt className='text-xs uppercase tracking-[0.3em] text-white/50'>Habitat</dt>
+								<dt className='text-xs tracking-[0.3em] text-white/50 uppercase'>Habitat</dt>
 								<dd className='mt-1 font-semibold'>{formatLabel(speciesInfo.habitat?.name)}</dd>
 							</div>
 							<div>
-								<dt className='text-xs uppercase tracking-[0.3em] text-white/50'>Color</dt>
+								<dt className='text-xs tracking-[0.3em] text-white/50 uppercase'>Color</dt>
 								<dd className='mt-1 font-semibold'>{formatLabel(speciesInfo.color?.name)}</dd>
 							</div>
 							<div>
-								<dt className='text-xs uppercase tracking-[0.3em] text-white/50'>Shape</dt>
+								<dt className='text-xs tracking-[0.3em] text-white/50 uppercase'>Shape</dt>
 								<dd className='mt-1 font-semibold'>{formatLabel(speciesInfo.shape?.name)}</dd>
 							</div>
 							<div>
-								<dt className='text-xs uppercase tracking-[0.3em] text-white/50'>Generation</dt>
+								<dt className='text-xs tracking-[0.3em] text-white/50 uppercase'>Generation</dt>
 								<dd className='mt-1 font-semibold'>{formatLabel(speciesInfo.generation?.name)}</dd>
 							</div>
 						</dl>
@@ -229,7 +238,7 @@ export default function SpeciesInfo({ pokemonData, accentType }: SpeciesInfoProp
 			</div>
 
 			<article className='rounded-3xl border border-white/10 bg-slate-950/60 p-6 backdrop-blur'>
-				<h3 className='text-sm uppercase tracking-[0.35em] text-white/60'>Evolution Chain</h3>
+				<h3 className='text-sm tracking-[0.35em] text-white/60 uppercase'>Evolution Chain</h3>
 
 				{evolutionStages.length ? (
 					<div className='mt-5 flex w-full flex-col gap-6'>
@@ -237,7 +246,9 @@ export default function SpeciesInfo({ pokemonData, accentType }: SpeciesInfoProp
 							{evolutionStages.map((stage, index) => (
 								<div key={index} className='flex flex-1 flex-col gap-4'>
 									<div className='rounded-2xl border border-white/10 bg-white/5 p-4 text-center backdrop-blur'>
-										<p className='text-xs uppercase tracking-[0.3em] text-white/50'>Stage {index + 1}</p>
+										<p className='text-xs tracking-[0.3em] text-white/50 uppercase'>
+											Stage {index + 1}
+										</p>
 									</div>
 									<div className='flex flex-col gap-4'>
 										{stage.map((link) => (
@@ -251,7 +262,7 @@ export default function SpeciesInfo({ pokemonData, accentType }: SpeciesInfoProp
 												>
 													{capitalize(link.species.name)}
 												</Link>
-												<p className='mt-2 text-xs uppercase tracking-[0.25em] text-white/60'>
+												<p className='mt-2 text-xs tracking-[0.25em] text-white/60 uppercase'>
 													{formatEvolutionDetail(link)}
 												</p>
 											</div>
@@ -268,7 +279,7 @@ export default function SpeciesInfo({ pokemonData, accentType }: SpeciesInfoProp
 
 			{alternateForms.length ? (
 				<article className='rounded-3xl border border-white/10 bg-slate-950/60 p-6 backdrop-blur'>
-					<h3 className='text-sm uppercase tracking-[0.35em] text-white/60'>Alternate Forms</h3>
+					<h3 className='text-sm tracking-[0.35em] text-white/60 uppercase'>Alternate Forms</h3>
 					<div className='mt-4 flex flex-wrap gap-3'>
 						{alternateForms.map((variant) => (
 							<Link

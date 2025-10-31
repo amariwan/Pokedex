@@ -3,7 +3,8 @@
  * Extracted from species-info.tsx to separate business logic from presentation.
  */
 
-import { EvolutionChainLink } from '@/types';
+import { type EvolutionChainLink } from '@/types';
+
 import { formatLabel } from './formatters';
 
 /**
@@ -12,9 +13,7 @@ import { formatLabel } from './formatters';
  * @param chain - Root evolution chain link
  * @returns Array of evolution stages
  */
-export const buildEvolutionStages = (
-	chain?: EvolutionChainLink | null,
-): EvolutionChainLink[][] => {
+export const buildEvolutionStages = (chain?: EvolutionChainLink | null): EvolutionChainLink[][] => {
 	if (!chain) return [];
 
 	const stages: EvolutionChainLink[][] = [];
@@ -26,7 +25,7 @@ export const buildEvolutionStages = (
 
 		// Avoid duplicates at same stage
 		const alreadyExists = stages[depth].some(
-			(existing) => existing.species.name === node.species.name
+			(existing) => existing.species.name === node.species.name,
 		);
 
 		if (!alreadyExists) {

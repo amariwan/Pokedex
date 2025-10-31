@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import Image from 'next/image';
 import Link from 'next/link';
@@ -14,7 +14,8 @@ import { getPokemonArtworkUrl } from '@/lib/pokemon-images';
 import { TYPE_BADGE_COLORS, typeGradient } from '@/lib/pokemon-theme';
 import { capitalize, cn } from '@/lib/utils';
 import { useFavoritesStore } from '@/stores/useFavoritesStore';
-import { PokemonCardProps } from '@/types';
+import { type PokemonCardProps } from '@/types';
+
 import { Icons } from './icons';
 
 export const PokemonCard = ({ name, initialData, priority, className }: PokemonCardProps) => {
@@ -24,7 +25,12 @@ export const PokemonCard = ({ name, initialData, priority, className }: PokemonC
 
 	// New modern features
 	const { playPokemonCry, playHoverSound, vibrate } = useSound();
-	const { ref: tiltRef, handleMouseMove, handleMouseLeave, handleMouseEnter } = useTiltEffect({
+	const {
+		ref: tiltRef,
+		handleMouseMove,
+		handleMouseLeave,
+		handleMouseEnter,
+	} = useTiltEffect({
 		max: 8,
 		scale: 1.03,
 		glare: true,
@@ -136,24 +142,30 @@ export const PokemonCard = ({ name, initialData, priority, className }: PokemonC
 				onClick={handleFavoriteClick}
 				aria-pressed={isFavorite}
 				aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
-				className='absolute right-4 top-4 z-10 rounded-full border border-white/20 bg-white/10 p-2 text-white transition-all duration-200 hover:scale-110 hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60'
+				className='absolute top-4 right-4 z-10 rounded-full border border-white/20 bg-white/10 p-2 text-white transition-all duration-200 hover:scale-110 hover:bg-white/20 focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:outline-none'
 			>
 				<Tooltip text={isFavorite ? 'Remove from favorites' : 'Add to favorites'}>
-					{isFavorite ? <Icons.heartFilled className='h-5 w-5' /> : <Icons.heart className='h-5 w-5' />}
+					{isFavorite ? (
+						<Icons.heartFilled className='h-5 w-5' />
+					) : (
+						<Icons.heart className='h-5 w-5' />
+					)}
 				</Tooltip>
 			</button>
 
 			<Link
 				href={`/pokemon/${name}`}
 				onClick={handleCardClick}
-				className='relative flex h-full flex-1 flex-col items-center text-center justify-between'
+				className='relative flex h-full flex-1 flex-col items-center justify-between text-center'
 				aria-label={`View ${name} details`}
 			>
-				<span className='mb-3 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-medium uppercase tracking-[0.4em] text-white/70'>
+				<span className='mb-3 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-medium tracking-[0.4em] text-white/70 uppercase'>
 					#{id.toString().padStart(3, '0')}
 				</span>
 				<div className='relative mb-4 flex h-32 w-32 items-center justify-center drop-shadow-[0_20px_35px_rgba(15,23,42,0.45)]'>
-					{!imageLoaded && <div className='absolute inset-0 rounded-2xl bg-white/20 backdrop-blur animate-pulse' />}
+					{!imageLoaded && (
+						<div className='absolute inset-0 animate-pulse rounded-2xl bg-white/20 backdrop-blur' />
+					)}
 					{imageSrc ? (
 						<Image
 							src={imageSrc}
@@ -164,10 +176,10 @@ export const PokemonCard = ({ name, initialData, priority, className }: PokemonC
 								'object-contain transition-opacity duration-500',
 								imageLoaded ? 'opacity-100' : 'opacity-0',
 							)}
-								priority={!!priority}
-								loading={priority ? 'eager' : 'lazy'}
-								decoding='async'
-								onLoad={() => setImageLoaded(true)}
+							priority={!!priority}
+							loading={priority ? 'eager' : 'lazy'}
+							decoding='async'
+							onLoad={() => setImageLoaded(true)}
 						/>
 					) : (
 						<div className='flex h-full w-full items-center justify-center rounded-2xl border border-dashed border-white/20 text-xs text-white/60'>
@@ -185,7 +197,7 @@ export const PokemonCard = ({ name, initialData, priority, className }: PokemonC
 							<span
 								key={type.type.name}
 								className={cn(
-									'inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wide backdrop-blur',
+									'inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold tracking-wide uppercase backdrop-blur',
 									style,
 								)}
 							>
@@ -197,11 +209,15 @@ export const PokemonCard = ({ name, initialData, priority, className }: PokemonC
 
 				<div className='mt-6 grid w-full grid-cols-2 gap-3 text-left text-sm text-white/80'>
 					<div className='rounded-2xl border border-white/10 bg-white/10 px-3 py-2 backdrop-blur'>
-						<span className='block text-[10px] uppercase tracking-widest text-white/60'>Height</span>
+						<span className='block text-[10px] tracking-widest text-white/60 uppercase'>
+							Height
+						</span>
 						<span className='text-sm font-semibold text-white'>{heightMetric}</span>
 					</div>
 					<div className='rounded-2xl border border-white/10 bg-white/10 px-3 py-2 backdrop-blur'>
-						<span className='block text-[10px] uppercase tracking-widest text-white/60'>Weight</span>
+						<span className='block text-[10px] tracking-widest text-white/60 uppercase'>
+							Weight
+						</span>
 						<span className='text-sm font-semibold text-white'>{weightMetric}</span>
 					</div>
 				</div>

@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import dynamic from "next/dynamic";
+import dynamic from 'next/dynamic';
 
-import type { PokemonGridProps } from "./PokemonGrid";
+import type { PokemonGridProps } from './PokemonGrid';
 
-const PokemonGrid = dynamic<PokemonGridProps>(() => import("./PokemonGrid"), {
-  ssr: false,
+const PokemonGrid = dynamic<PokemonGridProps>(() => import('./PokemonGrid'), {
+	ssr: false,
 });
 
 export default function PokemonGridClient(props: PokemonGridProps) {
-  return <PokemonGrid {...props} />;
+	return <PokemonGrid {...props} />;
 }

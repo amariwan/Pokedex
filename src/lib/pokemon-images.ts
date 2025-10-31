@@ -3,8 +3,7 @@
  * Extracted from hooks to pure functions (not hooks, no state/effects).
  */
 
-const SPRITE_BASE_URL =
-	'https://github.com/PokeAPI/sprites/blob/master/sprites/pokemon';
+const SPRITE_BASE_URL = 'https://github.com/PokeAPI/sprites/blob/master/sprites/pokemon';
 const ARTWORK_BASE_URL =
 	'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork';
 

@@ -12,7 +12,12 @@ import {
 	getSpeciesByUrl,
 } from '@/lib/pokemonAPI';
 import { validatePagination, validatePokemonName } from '@/lib/validation';
-import { EvolutionChain, PokedexResponse, PokemonData, SpeciesInfo } from '@/types';
+import {
+	type EvolutionChain,
+	type PokedexResponse,
+	type PokemonData,
+	type SpeciesInfo,
+} from '@/types';
 
 vi.mock('@/lib/pokeApiClient', () => ({
 	fetchFromPokeApi: vi.fn(),
@@ -140,9 +145,7 @@ describe('getPokemonDetailsBatch', () => {
 describe('regional and species helpers', () => {
 	test('getPokemonFromRegion returns pokedex entries', async () => {
 		const response: PokedexResponse = {
-			pokemon_entries: [
-				{ entry_number: 1, pokemon_species: { name: 'bulbasaur', url: '/1' } },
-			],
+			pokemon_entries: [{ entry_number: 1, pokemon_species: { name: 'bulbasaur', url: '/1' } }],
 		};
 		fetchFromPokeApiMock.mockResolvedValueOnce(response);
 

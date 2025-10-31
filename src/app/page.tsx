@@ -2,7 +2,7 @@
 import Hero from '@/components/Hero';
 import PokemonGridClient from '@/components/PokemonGridClient';
 import { getPokemonDetailsBatch, getPokemonList } from '@/lib/pokemonAPI';
-import { PokemonData } from '@/types';
+import { type PokemonData } from '@/types';
 
 const INITIAL_COUNT = 24; // fetch details for first N pokemons to improve initial load
 

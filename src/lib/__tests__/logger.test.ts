@@ -50,9 +50,7 @@ describe('logger utility', () => {
 		logger.warn('careful', { risk: 42 });
 
 		expect(infoSpy).toHaveBeenCalledWith('[2024-01-01T00:00:00.000Z] [INFO] ready');
-		expect(warnSpy).toHaveBeenCalledWith(
-			'[2024-01-01T00:00:00.000Z] [WARN] careful {"risk":42}',
-		);
+		expect(warnSpy).toHaveBeenCalledWith('[2024-01-01T00:00:00.000Z] [WARN] careful {"risk":42}');
 	});
 
 	test('logs error details when provided with Error instance', async () => {
@@ -63,9 +61,7 @@ describe('logger utility', () => {
 
 		logger.error('failed', error, { step: 'fetch' });
 
-		expect(errorSpy).toHaveBeenCalledWith(
-			expect.stringContaining('"error":"bad things"'),
-		);
+		expect(errorSpy).toHaveBeenCalledWith(expect.stringContaining('"error":"bad things"'));
 		expect(errorSpy.mock.calls[0][0]).toContain('"step":"fetch"');
 		expect(errorSpy.mock.calls[0][0]).toContain('"stack"');
 	});

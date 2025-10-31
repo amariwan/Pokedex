@@ -1,11 +1,6 @@
 import { describe, expect, test } from 'vitest';
 
-import {
-	formatLabel,
-	formatMetric,
-	formatMetricValue,
-	sanitizeFlavorText,
-} from '@/lib/formatters';
+import { formatLabel, formatMetric, formatMetricValue, sanitizeFlavorText } from '@/lib/formatters';
 
 describe('formatMetric', () => {
 	test('returns placeholder when value is missing', () => {

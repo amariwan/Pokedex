@@ -1,9 +1,9 @@
-import { RatioBarProps } from '@/types';
+import { type RatioBarProps } from '@/types';
 
 export const RatioBar: React.FC<RatioBarProps> = ({ value }) => {
 	if (value === -1) {
 		return (
-			<div className='rounded-2xl border border-white/10 bg-white/10 px-3 py-2 text-xs uppercase tracking-[0.3em] text-white/70'>
+			<div className='rounded-2xl border border-white/10 bg-white/10 px-3 py-2 text-xs tracking-[0.3em] text-white/70 uppercase'>
 				Genderless species
 			</div>
 		);
@@ -14,7 +14,7 @@ export const RatioBar: React.FC<RatioBarProps> = ({ value }) => {
 
 	return (
 		<div className='space-y-2'>
-			<div className='flex justify-between text-[11px] uppercase tracking-[0.3em] text-white/55'>
+			<div className='flex justify-between text-[11px] tracking-[0.3em] text-white/55 uppercase'>
 				<span>Female {femalePercent}%</span>
 				<span>Male {malePercent}%</span>
 			</div>

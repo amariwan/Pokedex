@@ -1,7 +1,9 @@
 'use client';
 
-import { cn } from '@/lib/utils';
 import { AnimatePresence, motion } from 'framer-motion';
+import { useMemo } from 'react';
+
+import { cn } from '@/lib/utils';
 
 interface ParticleEffectProps {
 	type: 'fire' | 'water' | 'electric' | 'grass' | 'psychic' | 'ice' | 'dragon';
@@ -21,13 +23,24 @@ const particleConfigs = {
 export const ParticleEffect: React.FC<ParticleEffectProps> = ({ type, className }) => {
 	const config = particleConfigs[type];
 
-	const particles = Array.from({ length: config.count }, (_, i) => ({
-		id: i,
-		x: Math.random() * 100,
-		y: Math.random() * 100,
-		size: Math.random() * 6 + 2,
-		delay: Math.random() * 2,
-	}));
+	const particles = useMemo(() => {
+		const baseSeed = type.charCodeAt(0);
+		const seededRandom = (seed: number) => {
+			const x = Math.sin(seed) * 10000;
+			return x - Math.floor(x);
+		};
+
+		return Array.from({ length: config.count }, (_, index) => {
+			const seed = baseSeed + index * 13;
+			return {
+				id: index,
+				x: seededRandom(seed) * 100,
+				y: seededRandom(seed + 1) * 100,
+				size: seededRandom(seed + 2) * 6 + 2,
+				delay: seededRandom(seed + 3) * 2,
+			};
+		});
+	}, [config.count, type]);
 
 	return (
 		<div className={cn('pointer-events-none absolute inset-0 overflow-hidden', className)}>
@@ -35,7 +48,7 @@ export const ParticleEffect: React.FC<ParticleEffectProps> = ({ type, className 
 				{particles.map((particle) => (
 					<motion.div
 						key={particle.id}
-						className="absolute rounded-full opacity-70"
+						className='absolute rounded-full opacity-70'
 						style={{
 							left: `${particle.x}%`,
 							top: `${particle.y}%`,

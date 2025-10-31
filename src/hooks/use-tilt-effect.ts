@@ -91,7 +91,7 @@ export const useTiltEffect = (config: TiltConfig = {}) => {
 				frameRef.current = requestAnimationFrame(updateTilt);
 			}
 		},
-		[clearTransitionTimeout, glare, updateTilt]
+		[clearTransitionTimeout, glare, updateTilt],
 	);
 
 	const handleMouseLeave = useCallback(() => {

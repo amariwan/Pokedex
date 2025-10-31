@@ -7,7 +7,7 @@ interface UseIntersectionObserverOptions extends IntersectionObserverInit {
 }
 
 export const useIntersectionObserver = (
-	options: UseIntersectionObserverOptions = {}
+	options: UseIntersectionObserverOptions = {},
 ): [React.RefObject<HTMLDivElement | null>, boolean] => {
 	const { threshold = 0, root = null, rootMargin = '0px', freezeOnceVisible = false } = options;
 
@@ -29,7 +29,7 @@ export const useIntersectionObserver = (
 					frozen.current = true;
 				}
 			},
-			{ threshold, root, rootMargin }
+			{ threshold, root, rootMargin },
 		);
 
 		observer.observe(element);

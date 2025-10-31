@@ -4,9 +4,7 @@ import { capitalize, cn } from '@/lib/utils';
 
 describe('cn', () => {
 	test('merges truthy class names and deduplicates conflicts', () => {
-		expect(cn('text-base', false && 'hidden', 'text-lg', 'font-bold')).toBe(
-			'text-lg font-bold',
-		);
+		expect(cn('text-base', false && 'hidden', 'text-lg', 'font-bold')).toBe('text-lg font-bold');
 	});
 });
 

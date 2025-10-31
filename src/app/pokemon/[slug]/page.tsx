@@ -20,7 +20,9 @@ type PokemonPageProps = {
 // Note: route-level revalidate is intentionally removed because
 // `next.config.mjs` enables `cacheComponents` globally.
 
-const fetchPokemonFromParams = async (params: Awaitable<PokemonPageParams>): Promise<{ slug: string; pokemon: PokemonData | null }> => {
+const fetchPokemonFromParams = async (
+	params: Awaitable<PokemonPageParams>,
+): Promise<{ slug: string; pokemon: PokemonData | null }> => {
 	const { slug } = await params;
 	const pokemon = await getPokemon(slug).catch(() => null);
 
@@ -28,7 +30,7 @@ const fetchPokemonFromParams = async (params: Awaitable<PokemonPageParams>): Pro
 };
 
 export async function generateMetadata({ params }: PokemonPageProps): Promise<Metadata> {
-	const { slug, pokemon } = await fetchPokemonFromParams(params);
+	const { pokemon } = await fetchPokemonFromParams(params);
 
 	if (!pokemon) {
 		return {
@@ -69,20 +71,26 @@ export default async function PokemonPage({ params }: PokemonPageProps) {
 
 	return (
 		<main className='relative min-h-screen overflow-hidden bg-slate-950 text-slate-100'>
-			<div className={`pointer-events-none absolute inset-0 bg-gradient-to-br ${typeGradient(primaryType)} opacity-80`} />
+			<div
+				className={`pointer-events-none absolute inset-0 bg-gradient-to-br ${typeGradient(primaryType)} opacity-80`}
+			/>
 			<div className='pointer-events-none absolute -top-32 left-10 h-96 w-96 rounded-full bg-white/10 blur-3xl' />
-			<div className='pointer-events-none absolute -bottom-20 right-10 h-[28rem] w-[28rem] rounded-full bg-white/5 blur-3xl' />
+			<div className='pointer-events-none absolute right-10 -bottom-20 h-[28rem] w-[28rem] rounded-full bg-white/5 blur-3xl' />
 
-			<section className='relative z-10 mx-auto flex w-full  flex-col gap-8 px-4 py-16 lg:py-24'>
+			<section className='relative z-10 mx-auto flex w-full flex-col gap-8 px-4 py-16 lg:py-24'>
 				<header className='flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between'>
 					<div>
-						<p className='text-sm uppercase tracking-[0.5em] text-slate-200/70'>Pokédex Entry</p>
+						<p className='text-sm tracking-[0.5em] text-slate-200/70 uppercase'>Pokédex Entry</p>
 						<h1 className='mt-2 text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl'>
 							{capitalize(pokemon.name)}
 						</h1>
 					</div>
 					<Link href='/' prefetch className='inline-flex justify-end'>
-						<Button size='lg' variant='secondary' className='rounded-full border border-white/10 bg-white/15 px-6 text-white shadow-lg transition hover:-translate-y-0.5 hover:bg-white/25'>
+						<Button
+							size='lg'
+							variant='secondary'
+							className='rounded-full border border-white/10 bg-white/15 px-6 text-white shadow-lg transition hover:-translate-y-0.5 hover:bg-white/25'
+						>
 							Back to collection
 						</Button>
 					</Link>

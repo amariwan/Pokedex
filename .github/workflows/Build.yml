@@ -43,28 +43,48 @@ jobs:
         run: corepack enable
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.20.0
 
       - name: Install deps
         run: pnpm install --frozen-lockfile
 
       - name: ESLint
+        id: eslint
         run: pnpm run lint
 
       - name: Prettier check
+        id: prettier
         run: pnpm run format:check
-        continue-on-error: false
 
       - name: Typecheck
-        run: pnpm run typecheck # z.B. tsc --noEmit
+        id: typecheck
+        run: pnpm run type-check # z.B. tsc --noEmit
 
       - name: Summarize quality
         if: always()
+        env:
+          ESLINT_OUTCOME: ${{ steps.eslint.outcome }}
+          PRETTIER_OUTCOME: ${{ steps.prettier.outcome }}
+          TYPECHECK_OUTCOME: ${{ steps.typecheck.outcome }}
         run: |
+          summarize() {
+            local label="$1"
+            local outcome="$2"
+            local icon="❌"
+            if [ "$outcome" = "success" ]; then
+              icon="✅"
+            elif [ "$outcome" = "skipped" ]; then
+              icon="⚪"
+            fi
+            echo "- ${label}: ${icon}" >> "$GITHUB_STEP_SUMMARY"
+          }
+
           echo "## Quality" >> "$GITHUB_STEP_SUMMARY"
-          echo "- ESLint: ✅" >> "$GITHUB_STEP_SUMMARY"
-          echo "- Prettier: ✅" >> "$GITHUB_STEP_SUMMARY"
-          echo "- Typecheck: ✅" >> "$GITHUB_STEP_SUMMARY"
+          summarize "ESLint" "$ESLINT_OUTCOME"
+          summarize "Prettier" "$PRETTIER_OUTCOME"
+          summarize "Typecheck" "$TYPECHECK_OUTCOME"
 
       - name: Notify on failure (PR only)
         if: ${{ failure() && github.event_name == 'pull_request' }}
@@ -84,7 +104,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node: ["22.x", "24.x"]
+        node: ['24.x']
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -100,7 +120,9 @@ jobs:
         run: corepack enable
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.20.0
 
       - name: Install deps
         run: pnpm install --frozen-lockfile
@@ -142,7 +164,9 @@ jobs:
         run: corepack enable
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.20.0
 
       - name: Install deps
         run: pnpm install --frozen-lockfile
@@ -201,7 +225,9 @@ jobs:
         run: corepack enable
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.20.0
 
       - name: Install deps
         run: pnpm install --frozen-lockfile
@@ -218,7 +244,7 @@ jobs:
       - name: Run E2E
         env:
           BASE_URL: http://127.0.0.1:3000
-        run: pnpm run e2e
+        run: pnpm run test:e2e
 
       - name: Upload E2E artifacts
         if: always()

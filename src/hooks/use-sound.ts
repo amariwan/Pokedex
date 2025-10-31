@@ -45,15 +45,18 @@ export const useSound = (initialVolume = 0.3) => {
 	const audioContextRef = useRef<AudioContext | null>(null);
 	const isMountedRef = useRef(true);
 
-	const settingsRef = useRef<SoundState>(
-		normalizeSoundState({
-			volume: clamp(initialVolume),
-			isMuted: false,
-			playbackRate: 1,
-			loop: false,
-		})
+	const initialSettings = useMemo(
+		() =>
+			normalizeSoundState({
+				volume: clamp(initialVolume),
+				isMuted: false,
+				playbackRate: 1,
+				loop: false,
+			}),
+		[initialVolume],
 	);
-	const [settings, setSettings] = useState<SoundState>(settingsRef.current);
+	const settingsRef = useRef<SoundState>(initialSettings);
+	const [settings, setSettings] = useState<SoundState>(initialSettings);
 	const [status, setStatus] = useState<PlaybackStatus>({ isPlaying: false, currentSource: null });
 	const [vibrationEnabled, setVibrationEnabled] = useState(true);
 
@@ -70,7 +73,7 @@ export const useSound = (initialVolume = 0.3) => {
 			const merged = overrides ? { ...settingsRef.current, ...overrides } : settingsRef.current;
 			applyExplicitSettings(audio, merged);
 		},
-		[applyExplicitSettings]
+		[applyExplicitSettings],
 	);
 
 	const setSettingsAndSync = useCallback(
@@ -81,24 +84,27 @@ export const useSound = (initialVolume = 0.3) => {
 						? (updater as (value: SoundState) => SoundState)(prev)
 						: { ...prev, ...updater };
 
-					const normalized = normalizeSoundState(next);
+				const normalized = normalizeSoundState(next);
 
-					settingsRef.current = normalized;
+				settingsRef.current = normalized;
 
-					if (audioRef.current) {
-						applyExplicitSettings(audioRef.current, normalized);
-					}
+				if (audioRef.current) {
+					applyExplicitSettings(audioRef.current, normalized);
+				}
 
-					return normalized;
-				});
-			},
-			[applyExplicitSettings]
-		);
+				return normalized;
+			});
+		},
+		[applyExplicitSettings],
+	);
 
-	const safeSetStatus = useCallback((updater: PlaybackStatus | ((prev: PlaybackStatus) => PlaybackStatus)) => {
-		if (!isMountedRef.current) return;
-		setStatus(updater);
-	}, []);
+	const safeSetStatus = useCallback(
+		(updater: PlaybackStatus | ((prev: PlaybackStatus) => PlaybackStatus)) => {
+			if (!isMountedRef.current) return;
+			setStatus(updater);
+		},
+		[],
+	);
 
 	const ensureAudioElement = useCallback(() => {
 		if (audioRef.current) {
@@ -156,7 +162,11 @@ export const useSound = (initialVolume = 0.3) => {
 
 				audio.onended = () => safeSetStatus({ currentSource: null, isPlaying: false });
 				audio.onpause = () =>
-					safeSetStatus((prev) => ({ ...prev, isPlaying: false, currentSource: prev.currentSource }));
+					safeSetStatus((prev) => ({
+						...prev,
+						isPlaying: false,
+						currentSource: prev.currentSource,
+					}));
 				audio.onplay = () => safeSetStatus({ currentSource: url, isPlaying: true });
 
 				await audio.play();
@@ -166,7 +176,7 @@ export const useSound = (initialVolume = 0.3) => {
 				// Silently ignore playback errors
 			}
 		},
-		[applySettings, ensureAudioElement, safeSetStatus]
+		[applySettings, ensureAudioElement, safeSetStatus],
 	);
 
 	const playPokemonCry = useCallback(
@@ -174,7 +184,7 @@ export const useSound = (initialVolume = 0.3) => {
 			const url = `https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/${pokemonId}.ogg`;
 			await playSound(url, { forceRestart: true, ...options });
 		},
-		[playSound]
+		[playSound],
 	);
 
 	const playHoverSound = useCallback(
@@ -218,7 +228,7 @@ export const useSound = (initialVolume = 0.3) => {
 				// Silently fail if tone cannot be produced
 			}
 		},
-		[ensureAudioContext]
+		[ensureAudioContext],
 	);
 
 	const pause = useCallback(() => {
@@ -257,7 +267,7 @@ export const useSound = (initialVolume = 0.3) => {
 			const clamped = clamp(value);
 			setSettingsAndSync((prev) => ({ ...prev, volume: clamped }));
 		},
-		[setSettingsAndSync]
+		[setSettingsAndSync],
 	);
 
 	const toggleMute = useCallback(
@@ -267,21 +277,21 @@ export const useSound = (initialVolume = 0.3) => {
 				isMuted: typeof value === 'boolean' ? value : !prev.isMuted,
 			}));
 		},
-		[setSettingsAndSync]
+		[setSettingsAndSync],
 	);
 
 	const setPlaybackRate = useCallback(
 		(rate: number) => {
 			setSettingsAndSync((prev) => ({ ...prev, playbackRate: rate }));
 		},
-		[setSettingsAndSync]
+		[setSettingsAndSync],
 	);
 
 	const setLoop = useCallback(
 		(loop: boolean) => {
 			setSettingsAndSync((prev) => ({ ...prev, loop }));
 		},
-		[setSettingsAndSync]
+		[setSettingsAndSync],
 	);
 
 	const toggleLoop = useCallback(() => {
@@ -295,7 +305,7 @@ export const useSound = (initialVolume = 0.3) => {
 				navigator.vibrate(pattern);
 			}
 		},
-		[vibrationEnabled]
+		[vibrationEnabled],
 	);
 
 	const toggleVibration = useCallback((value?: boolean) => {
@@ -311,7 +321,7 @@ export const useSound = (initialVolume = 0.3) => {
 			isPlaying: status.isPlaying,
 			currentSource: status.currentSource,
 		}),
-		[settings, status]
+		[settings, status],
 	);
 
 	const getAudioElement = useCallback(() => audioRef.current, []);

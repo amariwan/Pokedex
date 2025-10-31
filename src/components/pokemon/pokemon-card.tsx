@@ -1,8 +1,9 @@
+import Link from 'next/link';
 import { Suspense } from 'react';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { capitalize } from '@/lib/utils';
-import Link from 'next/link';
+
 import PokemonImageWithShiny from './PokemonImageWithShiny';
 
 type Props = {
@@ -17,7 +18,7 @@ export default function PokemonCard({ pokemonName, pokemonImgUrl }: Props) {
 				<CardHeader>
 					<CardTitle>{capitalize(pokemonName)}</CardTitle>
 				</CardHeader>
-				<CardContent className='self-center justify-center flex'>
+				<CardContent className='flex justify-center self-center'>
 					<Suspense fallback={<div>Loading...</div>}>
 						<PokemonImageWithShiny name={pokemonName} imageUrl={pokemonImgUrl} />
 					</Suspense>

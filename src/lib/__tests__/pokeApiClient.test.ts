@@ -54,21 +54,21 @@ describe('fetchFromPokeApi', () => {
 		});
 
 		expect(data).toEqual({ created: true });
-	expect(mockFetch).toHaveBeenCalledWith(
-		'https://pokeapi.co/api/v2/custom',
-		expect.objectContaining({
-			method: 'POST',
-			signal: controller.signal,
-			cache: 'no-store',
-			next: { revalidate: false },
-			headers: expect.objectContaining({
-				Authorization: 'Bearer token',
+		expect(mockFetch).toHaveBeenCalledWith(
+			'https://pokeapi.co/api/v2/custom',
+			expect.objectContaining({
+				method: 'POST',
+				signal: controller.signal,
+				cache: 'no-store',
+				next: { revalidate: false },
+				headers: expect.objectContaining({
+					Authorization: 'Bearer token',
+				}),
 			}),
-		}),
-	);
+		);
 
-	const [, options] = mockFetch.mock.calls[0];
-	expect(options?.headers).not.toHaveProperty('Content-Type');
+		const [, options] = mockFetch.mock.calls[0];
+		expect(options?.headers).not.toHaveProperty('Content-Type');
 	});
 
 	test('accepts absolute URLs without prefixing the base', async () => {
@@ -76,10 +76,7 @@ describe('fetchFromPokeApi', () => {
 
 		await fetchFromPokeApi('https://example.com/data');
 
-		expect(mockFetch).toHaveBeenCalledWith(
-			'https://example.com/data',
-			expect.any(Object),
-		);
+		expect(mockFetch).toHaveBeenCalledWith('https://example.com/data', expect.any(Object));
 	});
 
 	test('throws descriptive error when response is not ok', async () => {

@@ -4,7 +4,12 @@ import tailwindcssAnimate from 'tailwindcss-animate';
 
 const config: Config = {
 	darkMode: 'class',
-	content: ['./pages/**/*.{ts,tsx}', './components/**/*.{ts,tsx}', './app/**/*.{ts,tsx}', './src/**/*.{ts,tsx}'],
+	content: [
+		'./pages/**/*.{ts,tsx}',
+		'./components/**/*.{ts,tsx}',
+		'./app/**/*.{ts,tsx}',
+		'./src/**/*.{ts,tsx}',
+	],
 	theme: {
 		container: {
 			center: true,
@@ -66,12 +71,12 @@ const config: Config = {
 			},
 			keyframes: {
 				'accordion-down': {
-					from: { height: "0" },
+					from: { height: '0' },
 					to: { height: 'var(--radix-accordion-content-height)' },
 				},
 				'accordion-up': {
 					from: { height: 'var(--radix-accordion-content-height)' },
-					to: { height: "0" },
+					to: { height: '0' },
 				},
 			},
 			animation: {
@@ -88,7 +93,9 @@ const config: Config = {
 export default config;
 function addVariablesForColors({ addBase, theme }: any) {
 	let allColors = flattenColorPalette(theme('colors'));
-	let newVars = Object.fromEntries(Object.entries(allColors).map(([key, val]) => [`--${key}`, val]));
+	let newVars = Object.fromEntries(
+		Object.entries(allColors).map(([key, val]) => [`--${key}`, val]),
+	);
 
 	addBase({
 		':root': newVars,

@@ -4,9 +4,7 @@ test.describe('Pokedex home', () => {
 	test('allows searching the Pokémon collection', async ({ page }) => {
 		await page.goto('/');
 
-		await expect(
-			page.getByRole('heading', { name: /Discover & curate your dream/ }),
-		).toBeVisible();
+		await expect(page.getByRole('heading', { name: /Discover & curate your dream/ })).toBeVisible();
 
 		const searchInput = page.getByPlaceholder('Search Pokémon...');
 		await expect(searchInput).toBeVisible();
@@ -17,8 +15,8 @@ test.describe('Pokedex home', () => {
 		).toBeVisible();
 
 		await searchInput.fill('pikachu');
-		await expect(
-			page.getByRole('heading', { name: 'Pikachu', level: 2 }),
-		).toBeVisible({ timeout: 20_000 });
+		await expect(page.getByRole('heading', { name: 'Pikachu', level: 2 })).toBeVisible({
+			timeout: 20_000,
+		});
 	});
 });

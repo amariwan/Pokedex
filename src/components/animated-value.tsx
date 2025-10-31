@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useRef } from 'react';
+
 import { gsap } from '@/lib/gsap/index';
 
 type Props = {
@@ -28,7 +29,7 @@ export const AnimatedValue = ({ value, round }: Props) => {
 		return () => {
 			context.revert();
 		};
-	}, []);
+	}, [round, value]);
 
 	return (
 		<span className='' ref={valueRef}>

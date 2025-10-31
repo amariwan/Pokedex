@@ -1,7 +1,8 @@
 'use client';
 
-import React from 'react';
 import { motion } from 'framer-motion';
+import React from 'react';
+
 import { cn } from '@/lib/utils'; // Stellen Sie sicher, dass dieser Import korrekt ist
 
 interface BackgroundGradientProps {
@@ -11,7 +12,12 @@ interface BackgroundGradientProps {
 	animate?: boolean;
 }
 
-export const BackgroundGradient: React.FC<BackgroundGradientProps> = ({ children, className, containerClassName, animate = true }) => {
+export const BackgroundGradient: React.FC<BackgroundGradientProps> = ({
+	children,
+	className,
+	containerClassName,
+	animate = true,
+}) => {
 	const variants = {
 		initial: {
 			backgroundPosition: '0% 50%',
@@ -22,7 +28,7 @@ export const BackgroundGradient: React.FC<BackgroundGradientProps> = ({ children
 	};
 
 	return (
-		<div className={cn('relative p-[4px] group', containerClassName)}>
+		<div className={cn('group relative p-[4px]', containerClassName)}>
 			<motion.div
 				variants={animate ? variants : undefined}
 				initial={animate ? 'initial' : undefined}
@@ -33,14 +39,14 @@ export const BackgroundGradient: React.FC<BackgroundGradientProps> = ({ children
 								duration: 5,
 								repeat: Infinity,
 								repeatType: 'reverse',
-						  }
+							}
 						: undefined
 				}
 				style={{
 					backgroundSize: animate ? '400% 400%' : undefined,
 				}}
 				className={cn(
-					'absolute inset-0 rounded-3xl z-[1] opacity-60 group-hover:opacity-100 blur-xl transition duration-500 will-change-transform',
+					'absolute inset-0 z-[1] rounded-3xl opacity-60 blur-xl transition duration-500 will-change-transform group-hover:opacity-100',
 					'bg-[radial-gradient(circle_farthest-side_at_0_100%,#00ccb1,transparent),radial-gradient(circle_farthest-side_at_100%_0,#7b61ff,transparent),radial-gradient(circle_farthest-side_at_100%_100%,#ffc414,transparent),radial-gradient(circle_farthest-side_at_0_0,#1ca0fb,#141316)]',
 				)}
 			/>
@@ -54,14 +60,14 @@ export const BackgroundGradient: React.FC<BackgroundGradientProps> = ({ children
 								duration: 5,
 								repeat: Infinity,
 								repeatType: 'reverse',
-						  }
+							}
 						: undefined
 				}
 				style={{
 					backgroundSize: animate ? '400% 400%' : undefined,
 				}}
 				className={cn(
-					'absolute inset-0 rounded-3xl z-[1] will-change-transform',
+					'absolute inset-0 z-[1] rounded-3xl will-change-transform',
 					'bg-[radial-gradient(circle_farthest-side_at_0_100%,#00ccb1,transparent),radial-gradient(circle_farthest-side_at_100%_0,#7b61ff,transparent),radial-gradient(circle_farthest-side_at_100%_100%,#ffc414,transparent),radial-gradient(circle_farthest-side_at_0_0,#1ca0fb,#141316)]',
 				)}
 			/>

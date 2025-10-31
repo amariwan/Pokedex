@@ -61,6 +61,8 @@ export const TYPE_ACCENT_BARS: Record<string, string> = {
 	default: 'bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600',
 };
 
-export const typeGradient = (type?: string | null) => TYPE_GRADIENTS[type ?? ''] ?? TYPE_GRADIENTS.default;
+export const typeGradient = (type?: string | null) =>
+	TYPE_GRADIENTS[type ?? ''] ?? TYPE_GRADIENTS.default;
 
-export const typeBadgeClass = (type?: string | null) => TYPE_BADGE_COLORS[type ?? ''] ?? TYPE_BADGE_COLORS.default;
+export const typeBadgeClass = (type?: string | null) =>
+	TYPE_BADGE_COLORS[type ?? ''] ?? TYPE_BADGE_COLORS.default;

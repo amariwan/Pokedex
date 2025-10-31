@@ -1,11 +1,19 @@
 'use client';
-import { Button } from '@/components/ui/button';
-import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
-import { PokemonSearchData } from '@/lib/data/pokemon-search';
-import { capitalize, cn } from '@/lib/utils';
-import { DialogProps } from '@radix-ui/react-dialog';
+import { type DialogProps } from '@radix-ui/react-dialog';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
+
+import { Button } from '@/components/ui/button';
+import {
+	CommandDialog,
+	CommandEmpty,
+	CommandGroup,
+	CommandInput,
+	CommandItem,
+	CommandList,
+} from '@/components/ui/command';
+import { PokemonSearchData } from '@/lib/data/pokemon-search';
+import { capitalize, cn } from '@/lib/utils';
 
 // Lightweight client-side fuzzy search using Fuse.js (dynamic import)
 
@@ -15,7 +23,9 @@ export function CommandSearch({ ...props }: DialogProps) {
 	const [open, setOpen] = useState(false);
 	const [query, setQuery] = useState('');
 	// results are objects with item + optional matches from Fuse
-	const [results, setResults] = useState<Array<{ item: typeof pokemonSearch[number]; matches?: any[] }>>(pokemonSearch.slice(0, 50).map((p) => ({ item: p })));
+	const [results, setResults] = useState<
+		Array<{ item: (typeof pokemonSearch)[number]; matches?: any[] }>
+	>(pokemonSearch.slice(0, 50).map((p) => ({ item: p })));
 
 	const fuseRef = useRef<any | null>(null);
 
@@ -31,7 +41,7 @@ export function CommandSearch({ ...props }: DialogProps) {
 				includeMatches: true,
 			});
 
-			if (mounted && !query.trim()) {
+			if (mounted) {
 				setResults(pokemonSearch.slice(0, 50).map((p) => ({ item: p })));
 			}
 		});
@@ -51,7 +61,10 @@ export function CommandSearch({ ...props }: DialogProps) {
 
 		if (fuseRef.current) {
 			const found = fuseRef.current.search(query, { limit: 50 });
-			const mapped = found.map((r: any) => ({ item: r.item as typeof pokemonSearch[number], matches: r.matches }));
+			const mapped = found.map((r: any) => ({
+				item: r.item as (typeof pokemonSearch)[number],
+				matches: r.matches,
+			}));
 			if (active) setResults(mapped);
 			return;
 		}
@@ -59,9 +72,17 @@ export function CommandSearch({ ...props }: DialogProps) {
 		// fallback if fuse isn't ready yet
 		import('fuse.js').then((mod) => {
 			const Fuse = (mod as any).default ?? (mod as any);
-			const fuse = new Fuse(pokemonSearch, { keys: ['name'], threshold: 0.32, ignoreLocation: true, includeMatches: true });
+			const fuse = new Fuse(pokemonSearch, {
+				keys: ['name'],
+				threshold: 0.32,
+				ignoreLocation: true,
+				includeMatches: true,
+			});
 			const found = fuse.search(query, { limit: 50 });
-			const mapped = found.map((r: any) => ({ item: r.item as typeof pokemonSearch[number], matches: r.matches }));
+			const mapped = found.map((r: any) => ({
+				item: r.item as (typeof pokemonSearch)[number],
+				matches: r.matches,
+			}));
 			if (active) setResults(mapped);
 		});
 
@@ -89,16 +110,27 @@ export function CommandSearch({ ...props }: DialogProps) {
 
 	return (
 		<>
-			<Button variant='outline' className={cn('relative h-9 w-full justify-start rounded-[0.5rem] text-sm text-muted-foreground sm:pr-12 md:w-40 lg:w-64')} onClick={() => setOpen(true)} {...props}>
+			<Button
+				variant='outline'
+				className={cn(
+					'text-muted-foreground relative h-9 w-full justify-start rounded-[0.5rem] text-sm sm:pr-12 md:w-40 lg:w-64',
+				)}
+				onClick={() => setOpen(true)}
+				{...props}
+			>
 				<span className='hidden lg:inline-flex'>Search Pokemon...</span>
 				<span className='inline-flex lg:hidden'>Search...</span>
-				<kbd className='pointer-events-none absolute right-1.5 top-2 hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex'>
+				<kbd className='bg-muted pointer-events-none absolute top-2 right-1.5 hidden h-5 items-center gap-1 rounded border px-1.5 font-mono text-[10px] font-medium opacity-100 select-none sm:flex'>
 					<span className='text-xs'>⌘</span>K
 				</kbd>
 			</Button>
 			<CommandDialog open={open} onOpenChange={setOpen}>
 				<CommandEmpty>No results found.</CommandEmpty>
-				<CommandInput placeholder='Type a pokemon to search...' value={query} onInput={(e: any) => setQuery(e.currentTarget.value)} />
+				<CommandInput
+					placeholder='Type a pokemon to search...'
+					value={query}
+					onInput={(e: any) => setQuery(e.currentTarget.value)}
+				/>
 				<CommandList>
 					<CommandGroup heading='Pokemon'>
 						{results.map(({ item, matches }, index) => (

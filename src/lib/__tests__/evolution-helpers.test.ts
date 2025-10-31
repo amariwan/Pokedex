@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'vitest';
 
 import { buildEvolutionStages, formatEvolutionDetail } from '@/lib/evolution-helpers';
-import { EvolutionChainLink, NamedAPIResource } from '@/types';
+import { type EvolutionChainLink, type NamedAPIResource } from '@/types';
 
 const resource = (name: string): NamedAPIResource => ({
 	name,
@@ -116,7 +116,7 @@ describe('formatEvolutionDetail', () => {
 				'Lvl 16',
 				'Level Up',
 				'Use Water Stone',
-				"Hold Kings Rock",
+				'Hold Kings Rock',
 				'Day',
 				'At Mt Coronet',
 				'Move Ancient Power',

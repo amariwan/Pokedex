@@ -1,8 +1,9 @@
 'use client';
 
-import { cn } from '@/lib/utils';
 import { motion, useMotionValue, useTransform } from 'framer-motion';
 import { useState } from 'react';
+
+import { cn } from '@/lib/utils';
 
 interface StackedCardsProps {
 	children: React.ReactNode[];
@@ -34,7 +35,7 @@ export const StackedCards: React.FC<StackedCardsProps> = ({ children, className 
 				return (
 					<motion.div
 						key={index}
-						className="absolute inset-0"
+						className='absolute inset-0'
 						style={{
 							x: isActive ? x : 0,
 							rotateZ: isActive ? rotateZ : 0,

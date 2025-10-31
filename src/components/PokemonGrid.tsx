@@ -1,8 +1,10 @@
 'use client';
 
-import { useFavoritesStore } from '@/stores/useFavoritesStore';
-import { NamedAPIResource, PokemonData, PokemonName } from '@/types';
 import { useCallback, useMemo, useState } from 'react';
+
+import { useFavoritesStore } from '@/stores/useFavoritesStore';
+import { type NamedAPIResource, type PokemonData, type PokemonName } from '@/types';
+
 import { PokemonCard } from './PokemonCard';
 import { SearchBar } from './SearchBar';
 import { Button } from './ui/button';
@@ -42,13 +44,16 @@ type CollectionState = {
 	isEmpty: boolean;
 };
 
-const useCollectionState = ({ pokemonNameList, favorites, searchText, page, viewMode }: CollectionStateArgs): CollectionState => {
+const useCollectionState = ({
+	pokemonNameList,
+	favorites,
+	searchText,
+	page,
+	viewMode,
+}: CollectionStateArgs): CollectionState => {
 	const normalizedSearch = useMemo(() => normalizeSearchText(searchText), [searchText]);
 
-	const favoriteEntries = useMemo(
-		() => favorites.map((name) => ({ name })),
-		[favorites],
-	);
+	const favoriteEntries = useMemo(() => favorites.map((name) => ({ name })), [favorites]);
 
 	const filteredPokemonList = useMemo(
 		() => filterByName(pokemonNameList, normalizedSearch),
@@ -130,7 +135,12 @@ type PokemonGridHeaderProps = {
 	onToggleViewMode: () => void;
 };
 
-const PokemonGridHeader = ({ viewMode, searchText, onSearchChange, onToggleViewMode }: PokemonGridHeaderProps) => (
+const PokemonGridHeader = ({
+	viewMode,
+	searchText,
+	onSearchChange,
+	onToggleViewMode,
+}: PokemonGridHeaderProps) => (
 	<section className='relative w-full px-4 pt-16 sm:px-6 lg:px-10'>
 		<div className='mx-auto flex w-full max-w-6xl flex-col gap-6 rounded-3xl border border-slate-200/60 bg-white/80 p-6 shadow-xl backdrop-blur dark:border-white/10 dark:bg-slate-900/50'>
 			<ViewModeToggle viewMode={viewMode} onToggle={onToggleViewMode} />
@@ -149,12 +159,20 @@ type PokemonGridSectionProps = {
 	page: number;
 };
 
-const PokemonGridSection = ({ viewMode, visibleList, isEmpty, hasMore, onLoadMore, initialDetails, page }: PokemonGridSectionProps) => (
-	<section className='relative w-full px-4 pb-20 pt-10 sm:px-6 lg:px-10'>
-		<div className='pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-slate-900/10 via-transparent to-transparent ' />
+const PokemonGridSection = ({
+	viewMode,
+	visibleList,
+	isEmpty,
+	hasMore,
+	onLoadMore,
+	initialDetails,
+	page,
+}: PokemonGridSectionProps) => (
+	<section className='relative w-full px-4 pt-10 pb-20 sm:px-6 lg:px-10'>
+		<div className='pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-slate-900/10 via-transparent to-transparent' />
 		<div className='relative mx-auto flex w-full max-w-6xl flex-col gap-10'>
 			<div className='flex flex-col items-center gap-2 text-center'>
-				<h3 className='text-3xl font-semibold text-slate-900 dark:text-white sm:text-4xl'>
+				<h3 className='text-3xl font-semibold text-slate-900 sm:text-4xl dark:text-white'>
 					{viewMode === 'collection' ? 'Explore the Pokédex' : 'Your Favorites'}
 				</h3>
 				<p className='text-sm text-slate-600 dark:text-slate-300'>
@@ -173,8 +191,13 @@ const PokemonGridSection = ({ viewMode, visibleList, isEmpty, hasMore, onLoadMor
 						const isFirst = viewMode === 'collection' && page === 1 && idx === 0;
 
 						return (
-							<div key={pokemon.name} className='w-full px-2 max-w-[18rem]'>
-								<PokemonCard name={pokemon.name} initialData={initial} priority={isFirst} className='h-full w-full' />
+							<div key={pokemon.name} className='w-full max-w-[18rem] px-2'>
+								<PokemonCard
+									name={pokemon.name}
+									initialData={initial}
+									priority={isFirst}
+									className='h-full w-full'
+								/>
 							</div>
 						);
 					})

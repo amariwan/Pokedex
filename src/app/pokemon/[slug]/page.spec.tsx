@@ -46,9 +46,10 @@ vi.mock('@/lib/pokemonAPI', () => ({
 	getPokemon: vi.fn(),
 }));
 
-import type { PokemonData } from '@/types';
-import { getPokemon } from '@/lib/pokemonAPI';
 import { typeGradient } from '@/lib/pokemon-theme';
+import { getPokemon } from '@/lib/pokemonAPI';
+import type { PokemonData } from '@/types';
+
 import PokemonPage, { generateMetadata } from './page';
 
 const samplePokemon = (overrides: Partial<PokemonData> = {}): PokemonData =>
@@ -85,7 +86,7 @@ const samplePokemon = (overrides: Partial<PokemonData> = {}): PokemonData =>
 		location_area_encounters: '',
 		forms: [],
 		...overrides,
-	} as PokemonData & Record<string, unknown>);
+	}) as PokemonData & Record<string, unknown>;
 
 describe('Pokemon page route', () => {
 	beforeEach(() => {

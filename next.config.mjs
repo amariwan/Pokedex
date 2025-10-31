@@ -3,8 +3,8 @@ const nextConfig = {
 	reactStrictMode: true,
 	allowedDevOrigins: ['127.0.0.1'],
 	experimental: {
- 		// serverActions must be an object in Next.js v16+ (not a boolean)
- 		serverActions: {},
+		// serverActions must be an object in Next.js v16+ (not a boolean)
+		serverActions: {},
 		optimizePackageImports: [
 			'@tabler/icons-react',
 			'lucide-react',

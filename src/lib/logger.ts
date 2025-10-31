@@ -50,9 +50,10 @@ class Logger {
 	}
 
 	error(message: string, error?: Error | unknown, context?: LogContext): void {
-		const errorContext = error instanceof Error
-			? { ...context, error: error.message, stack: error.stack }
-			: { ...context, error };
+		const errorContext =
+			error instanceof Error
+				? { ...context, error: error.message, stack: error.stack }
+				: { ...context, error };
 		this.log('error', message, errorContext);
 	}
 }

@@ -1,8 +1,9 @@
 'use client';
 
-import { PokemonImageProps } from '@/types';
 import Image from 'next/image';
 import React from 'react';
+
+import { type PokemonImageProps } from '@/types';
 
 const PokemonImage: React.FC<PokemonImageProps> = ({ image, name, className }) => {
 	return (
@@ -10,7 +11,7 @@ const PokemonImage: React.FC<PokemonImageProps> = ({ image, name, className }) =
 			src={image}
 			alt={name}
 			className={className}
-			loading="lazy"
+			loading='lazy'
 			style={{ objectFit: 'cover', borderRadius: '8px' }}
 		/>
 	);

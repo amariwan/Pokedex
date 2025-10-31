@@ -26,12 +26,12 @@ export const useScrollAnimation = () => {
 								scale: 1,
 								duration: 0.8,
 								ease: 'power3.out',
-							}
+							},
 						);
 					}
 				});
 			},
-			{ threshold: 0.1 }
+			{ threshold: 0.1 },
 		);
 
 		observer.observe(ref.current);

@@ -2,7 +2,7 @@ import { Icons } from './icons';
 
 const Loading = () => (
 	<main className='flex h-full w-full grow items-center justify-center pt-14'>
-		<div className='flex flex-row gap-2 animate-bounce'>
+		<div className='flex animate-bounce flex-row gap-2'>
 			<Icons.logo />
 			<h1>Loading</h1>
 		</div>
