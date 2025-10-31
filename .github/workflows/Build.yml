@@ -99,17 +99,11 @@ jobs:
       - name: Enable Corepack
         run: corepack enable
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+
       - name: Install deps
         run: pnpm install --frozen-lockfile
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
 
       - name: Unit tests with coverage
         run: pnpm run test -- --coverage
@@ -146,6 +140,9 @@ jobs:
 
       - name: Enable Corepack
         run: corepack enable
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
 
       - name: Install deps
         run: pnpm install --frozen-lockfile
@@ -202,6 +199,9 @@ jobs:
 
       - name: Enable Corepack
         run: corepack enable
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
 
       - name: Install deps
         run: pnpm install --frozen-lockfile
