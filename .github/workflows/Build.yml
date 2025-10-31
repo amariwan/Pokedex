@@ -11,20 +11,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           fetch-depth: 2
 
       - name: Setup Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4
         with:
-          node-version: "lts/*"
+          node-version: "24.11.0"
           cache: "pnpm"
 
       - name: Install pnpm
         run: |
+          # Ensure pnpm is available (Netlify/GHA runners may already provide corepack)
           npm install -g pnpm
-          pnpm --version # Verifiziert die Installation von pnpm
+          pnpm --version # Verifies pnpm installation
 
       - name: Verify pnpm Installation
         run: |
@@ -42,12 +43,12 @@ jobs:
         env:
           CI: true
 
-      - name: Notify on Failure
-        if: failure()
+      - name: Notify on Failure (PR only)
+        if: ${{ failure() && github.event_name == 'pull_request' }}
         uses: actions/github-script@v6
         with:
           script: |
-            const { github, context } = require('@actions/github');
+            // `github` and `context` are injected by the action
             const issue = context.issue;
             const message = `🚨 Build failed for commit [${context.sha}](https://github.com/${context.repo.owner}/${context.repo.repo}/commit/${context.sha}) on branch \`${context.ref}\`. Please check the [Actions tab](https://github.com/${context.repo.owner}/${context.repo.repo}/actions) for details.`;
             await github.issues.createComment({
@@ -60,4 +61,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: build
-          path: ./dist # Angepasster Pfad zum Build-Output
+          path: .next # Upload Next.js build output
