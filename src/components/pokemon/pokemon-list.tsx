@@ -1,17 +1,14 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import PokemonCard from "./pokemon-card";
 import { useGetAllPokemonPage } from "@/hooks/use-pokeapi";
 import Loading from "../loading";
-import { PokemonData } from "@/types";
+import { NamedAPIResource } from "@/types";
 import usePaginationStore from "../store/store";
 import { Button } from "../ui/button";
 
-type Props = {};
-
-export default function PokemonList({}: Props) {
-  const { currentPage, itemsPerPage, updatePagePosition } =
-    usePaginationStore();
+export default function PokemonList() {
+  const { currentPage, itemsPerPage, updatePagePosition } = usePaginationStore();
 
   const {
     isLoading,
@@ -19,7 +16,7 @@ export default function PokemonList({}: Props) {
     error,
   } = useGetAllPokemonPage(itemsPerPage, currentPage);
 
-  const [pokemonList, setPokemonList] = useState<PokemonData[]>([]);
+  const [pokemonList, setPokemonList] = useState<NamedAPIResource[]>([]);
 
   useEffect(() => {
     setPokemonList(pokemonPage ?? []);
@@ -34,16 +31,20 @@ export default function PokemonList({}: Props) {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-4">
-      {pokemonList.map((pokemon, index) => (
-        <PokemonCard
-          key={index}
-          pokemonName={pokemon.name}
-          pokemonImgUrl={`https://img.pokemondb.net/artwork/large/${pokemon.name}.jpg`}
-        />
+    <div className="flex flex-wrap justify-center gap-6">
+      {pokemonList.map((pokemon) => (
+        <div
+          key={pokemon.name}
+          className="flex w-full min-w-[18rem] flex-1 basis-full justify-center sm:basis-[48%] lg:basis-[30%] xl:basis-[22%]"
+        >
+          <PokemonCard
+            pokemonName={pokemon.name}
+            pokemonImgUrl={`https://img.pokemondb.net/artwork/large/${pokemon.name}.jpg`}
+          />
+        </div>
       ))}
 
-      <div className="fixed bottom-0 flex flex-row gap-2 md:bottom-[-10] right-4 mb-4 mr-4">
+      <div className="fixed bottom-0 right-4 mb-4 mr-4 flex flex-row gap-2 md:bottom-[-10]">
         <Button size={"lg"} onClick={() => updatePagePosition(-itemsPerPage)}>
           -
         </Button>

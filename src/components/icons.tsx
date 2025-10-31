@@ -1,5 +1,5 @@
+import { AlertTriangle, ArrowDown, ArrowRight, ArrowUp, Check, ChevronLeft, ChevronRight, ClipboardCheck, Copy, CreditCard, File, FileText, HelpCircle, Image, Instagram, Laptop, Loader2, Moon, MoreVertical, Pizza, Plus, Settings, SunMedium, Trash, User, X, type Icon as LucideIcon } from 'lucide-react';
 import { SVGProps } from 'react';
-import { AlertTriangle, ArrowRight, Check, ChevronLeft, ChevronRight, ClipboardCheck, Copy, CreditCard, File, FileText, HelpCircle, Image, Instagram, Laptop, Loader2, Moon, MoreVertical, Pizza, Plus, Settings, SunMedium, Trash, User, X, type Icon as LucideIcon } from 'lucide-react';
 
 export type Icon = typeof LucideIcon;
 
@@ -329,4 +329,6 @@ export const Icons = {
 			/>
 		</svg>
 	),
+	arrowUp: ArrowUp,
+	arrowDown: ArrowDown,
 };

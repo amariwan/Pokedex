@@ -1,5 +1,6 @@
 import { FC } from 'react';
-import { HoverBorderGradient } from '@/components/ui/hover-border-gradient';
+
+import { Button } from '@/components/ui/button';
 
 interface ViewModeToggleProps {
 	viewMode: 'collection' | 'favorites';
@@ -8,11 +9,20 @@ interface ViewModeToggleProps {
 
 export const ViewModeToggle: FC<ViewModeToggleProps> = ({ viewMode, onToggle }) => {
 	return (
-		<div className='flex flex-col items-center md:flex-row md:justify-between mb-6'>
-			<h3 className='text-3xl md:text-4xl font-extrabold text-center text-gray-800 dark:text-gray-100 mb-4 md:mb-0'>{viewMode === 'collection' ? 'Find Your Pokémon' : 'Your Favorite Pokémon'}</h3>
-			<HoverBorderGradient onClick={onToggle} containerClassName='rounded-full' as='button' className=' px-2 py-1 dark:bg-black bg-white text-black dark:text-white flex items-center space-x-2'>
-				<span>{viewMode === 'collection' ? 'Show Favorites' : 'Show Collection'}</span>
-			</HoverBorderGradient>
+		<div className='flex flex-col gap-4 text-center md:flex-row md:items-center md:justify-between md:text-left'>
+			<div>
+				<h3 className='text-2xl font-semibold text-slate-900 dark:text-white sm:text-3xl'>
+					{viewMode === 'collection' ? 'Find your next favorite Pokémon' : 'Your curated Pokémon lineup'}
+				</h3>
+				<p className='mt-1 text-sm text-slate-600 dark:text-slate-300'>
+					{viewMode === 'collection'
+						? 'Browse the entire Pokédex, filter by name, and uncover detailed stats instantly.'
+						: 'Everything you have starred lives here — perfect for quick reference and bragging rights.'}
+				</p>
+			</div>
+			<Button onClick={onToggle} variant='secondary' className='mx-auto w-full rounded-full px-6 py-2 md:mx-0 md:w-auto'>
+				{viewMode === 'collection' ? 'Show favorites' : 'Back to collection'}
+			</Button>
 		</div>
 	);
 };

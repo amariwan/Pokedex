@@ -7,13 +7,13 @@ interface TooltipProps {
 
 const Tooltip: React.FC<TooltipProps> = ({ text, children }) => {
 	return (
-		<>
+		<span className='relative inline-flex group'>
 			{children}
-			<div className='absolute bottom-0 flex flex-col items-center hidden mb-6 group-hover:flex'>
-				<span className='relative z-10 p-2 text-xs leading-none text-white whitespace-no-wrap bg-black shadow-lg rounded-md'>{text}</span>
-				<div className='w-3 h-3 -mt-2 rotate-45 bg-black'></div>
-			</div>
-		</>
+			<span className='pointer-events-none absolute -top-10 left-1/2 z-10 hidden -translate-x-1/2 flex-col items-center group-hover:flex'>
+				<span className='rounded-md bg-black px-2 py-1 text-xs font-medium text-white shadow-lg'>{text}</span>
+				<span className='h-2 w-2 rotate-45 bg-black'></span>
+			</span>
+		</span>
 	);
 };
 

@@ -1,8 +1,10 @@
-import '@/styles/globals.css';
-import { ThemeProvider } from '@/components/theme-provider';
 import { Footer } from '@/components/Footer';
-import SiteHeader from '@/components/site-header';
+import PwaRegister from '@/components/pwa-register';
 import QueryProvider from '@/components/query-provider';
+import SiteHeader from '@/components/site-header';
+import { ThemeProvider } from '@/components/theme-provider';
+import '@/styles/globals.css';
+import React, { Suspense } from 'react';
 
 export const metadata = {
 	title: 'Pokédex App',
@@ -24,9 +26,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 		<html lang='en' suppressHydrationWarning>
 			<body className='bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300'>
 				<ThemeProvider attribute='class' defaultTheme='dark'>
+					<a href='#main' className='sr-only focus:not-sr-only focus:absolute focus:top-16 focus:left-4 z-50 bg-white dark:bg-gray-800 px-3 py-2 rounded'>Skip to content</a>
 					<SiteHeader />
-					<QueryProvider>{children}</QueryProvider>
-					<Footer />
+					<PwaRegister />
+					<QueryProvider>
+						<main id='main'>
+							{children}
+						</main>
+					</QueryProvider>
+					<Suspense fallback={<div className='text-center py-6 text-sm text-white/60'>Loading footer…</div>}>
+						<Footer />
+					</Suspense>
 				</ThemeProvider>
 			</body>
 		</html>

@@ -1,11 +1,9 @@
 import type { Config } from 'tailwindcss';
+import flattenColorPalette from 'tailwindcss/lib/util/flattenColorPalette';
+import tailwindcssAnimate from 'tailwindcss-animate';
 
-const defaultTheme = require('tailwindcss/defaultTheme');
-
-const colors = require('tailwindcss/colors');
-const { default: flattenColorPalette } = require('tailwindcss/lib/util/flattenColorPalette');
 const config: Config = {
-	darkMode: ['class'],
+	darkMode: 'class',
 	content: ['./pages/**/*.{ts,tsx}', './components/**/*.{ts,tsx}', './app/**/*.{ts,tsx}', './src/**/*.{ts,tsx}'],
 	theme: {
 		container: {
@@ -51,6 +49,16 @@ const config: Config = {
 					foreground: 'hsl(var(--card-foreground))',
 				},
 			},
+			// Ensure explicit color utilities exist for applying in CSS
+			borderColor: {
+				border: 'hsl(var(--border))',
+			},
+			backgroundColor: {
+				background: 'hsl(var(--background))',
+			},
+			textColor: {
+				foreground: 'hsl(var(--foreground))',
+			},
 			borderRadius: {
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',
@@ -75,7 +83,7 @@ const config: Config = {
 			},
 		},
 	},
-	plugins: [require('tailwindcss-animate'), addVariablesForColors],
+	plugins: [tailwindcssAnimate, addVariablesForColors],
 };
 export default config;
 function addVariablesForColors({ addBase, theme }: any) {

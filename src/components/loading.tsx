@@ -1,14 +1,12 @@
 import { Icons } from './icons';
 
-type Props = {};
+const Loading = () => (
+	<main className='flex h-full w-full grow items-center justify-center pt-14'>
+		<div className='flex flex-row gap-2 animate-bounce'>
+			<Icons.logo />
+			<h1>Loading</h1>
+		</div>
+	</main>
+);
 
-export default function loading({}: Props) {
-	return (
-		<main className='w-full h-full grow flex pt-14 justify-center items-center'>
-			<div className='animate-bounce flex flex-row gap-2'>
-				<Icons.logo />
-				<h1>Loading</h1>
-			</div>
-		</main>
-	);
-}
+export default Loading;

@@ -1,113 +1,213 @@
-import Link from 'next/link';
-import Image from 'next/image';
-import { useEffect, useState } from 'react';
-import { getPokemon } from '@/lib/pokemonAPI';
-import Tooltip from '@/components/Tooltip';
-import { Icons } from './icons';
-import { Pokemon, PokemonCardProps } from '@/types';
+"use client";
 
-const typeColors: Record<string, { bg: string; text: string }> = {
-	grass: { bg: 'bg-green-500', text: 'text-white' },
-	fire: { bg: 'bg-red-500', text: 'text-white' },
-	water: { bg: 'bg-blue-500', text: 'text-white' },
-	electric: { bg: 'bg-yellow-500', text: 'text-black' },
-	psychic: { bg: 'bg-purple-500', text: 'text-white' },
-	ice: { bg: 'bg-teal-500', text: 'text-white' },
-	dragon: { bg: 'bg-indigo-500', text: 'text-white' },
-	dark: { bg: 'bg-gray-800', text: 'text-white' },
-	fairy: { bg: 'bg-pink-500', text: 'text-white' },
-	fighting: { bg: 'bg-orange-500', text: 'text-white' },
-	flying: { bg: 'bg-blue-300', text: 'text-gray-800' },
-	poison: { bg: 'bg-purple-700', text: 'text-white' },
-	ground: { bg: 'bg-yellow-700', text: 'text-white' },
-	rock: { bg: 'bg-yellow-600', text: 'text-white' },
-	bug: { bg: 'bg-green-700', text: 'text-white' },
-	ghost: { bg: 'bg-purple-900', text: 'text-white' },
-	steel: { bg: 'bg-gray-400', text: 'text-gray-800' },
-	unknown: { bg: 'bg-gray-300', text: 'text-gray-800' },
-	shadow: { bg: 'bg-black', text: 'text-gray-100' },
+import Image from 'next/image';
+import Link from 'next/link';
+import { useEffect, useMemo, useState } from 'react';
+
+import Tooltip from '@/components/Tooltip';
+import { useIntersectionObserver } from '@/hooks/use-intersection-observer';
+import { findPokemonDBImage, useGetPokemon } from '@/hooks/use-pokeapi';
+import { useSound } from '@/hooks/use-sound';
+import { useTiltEffect } from '@/hooks/use-tilt-effect';
+import { capitalize, cn } from '@/lib/utils';
+import { TYPE_BADGE_COLORS, typeGradient } from '@/lib/pokemon-theme';
+import { useFavoritesStore } from '@/stores/useFavoritesStore';
+import { PokemonCardProps } from '@/types';
+import { Icons } from './icons';
+
+const formatMetric = (value?: number, divisor = 10, unit = '') => {
+	if (value === undefined) {
+		return '—';
+	}
+	const formatted = (value / divisor).toFixed(1);
+	return `${formatted}${unit}`;
 };
-export const PokemonCard = ({ name }: PokemonCardProps) => {
-	const [pokemonObject, setPokemonObject] = useState<Pokemon | null>(null);
-	const [isLoading, setIsLoading] = useState<boolean>(true);
-	const [isFavorite, setIsFavorite] = useState<boolean>(false);
+
+export const PokemonCard = ({ name, initialData, priority, className }: PokemonCardProps) => {
+	const [imageLoaded, setImageLoaded] = useState(false);
+	const isFavorite = useFavoritesStore((state) => state.isFavorite(name));
+	const toggleFavorite = useFavoritesStore((state) => state.toggleFavorite);
+
+	// New modern features
+	const { playPokemonCry, playHoverSound, vibrate } = useSound();
+	const { ref: tiltRef, handleMouseMove, handleMouseLeave, handleMouseEnter } = useTiltEffect({
+		max: 8,
+		scale: 1.03,
+		glare: true,
+		maxGlare: 0.3,
+	});
+	const [intersectionRef, isVisible] = useIntersectionObserver({
+		threshold: 0.1,
+		freezeOnceVisible: true,
+	});
+
+	const { data: pokemonObject, isLoading } = useGetPokemon(name, {
+		initialData: initialData ?? undefined,
+	});
+
+	const primaryType = pokemonObject?.types?.[0]?.type.name ?? 'default';
+
+	const cardGradient = typeGradient(primaryType);
+
+	const imageSrc = useMemo(() => {
+		if (!pokemonObject) {
+			return null;
+		}
+
+		return (
+			pokemonObject.sprites.other['official-artwork'].front_default ??
+			findPokemonDBImage(pokemonObject.id)
+		);
+	}, [pokemonObject]);
 
 	useEffect(() => {
-		const fetchPokemon = async () => {
-			setIsLoading(true);
-			const data = await getPokemon(name);
-			setPokemonObject(data);
-			setIsLoading(false);
+		setImageLoaded(false);
+	}, [imageSrc]);
 
-			const favorites = JSON.parse(localStorage.getItem('favorites') ?? '[]');
-			setIsFavorite(favorites.includes(name));
-		};
-
-		fetchPokemon();
-	}, [name]);
-
-	const addFavorite = () => {
-		const favorites = JSON.parse(localStorage.getItem('favorites') ?? '[]');
-		if (!favorites.includes(name)) {
-			favorites.push(name);
-			localStorage.setItem('favorites', JSON.stringify(favorites));
-			setIsFavorite(true);
-		}
-	};
-
-	const removeFavorite = () => {
-		const favorites = JSON.parse(localStorage.getItem('favorites') ?? '[]');
-		const newFavorites = favorites.filter((favorite: string) => favorite !== name);
-		localStorage.setItem('favorites', JSON.stringify(newFavorites));
-		setIsFavorite(false);
-	};
-
-	const handleFavoriteClick = () => {
-		if (isFavorite) {
-			removeFavorite();
-		} else {
-			addFavorite();
-		}
-	};
-
-	if (isLoading) {
+	if (isLoading || !pokemonObject) {
 		return (
-			<div className='relative p-4 m-4 border rounded-xl bg-white shadow-lg dark:bg-gray-800 dark:border-gray-700'>
-				<div className='animate-pulse flex flex-col items-center space-y-4'>
-					<div className='rounded-md bg-gray-300 dark:bg-gray-700 h-32 w-32'></div>
-					<div className='h-4 bg-gray-300 dark:bg-gray-700 rounded w-3/4'></div>
-					<div className='space-y-2 w-full px-4'>
-						<div className='h-4 bg-gray-300 dark:bg-gray-700 rounded'></div>
-						<div className='h-4 bg-gray-300 dark:bg-gray-700 rounded w-5/6'></div>
+			<div className='w-full overflow-hidden rounded-3xl border border-white/5 bg-slate-900/70 p-6 shadow-lg'>
+				<div className='flex animate-pulse flex-col items-center gap-6'>
+					<div className='h-28 w-28 rounded-2xl bg-slate-800/80' />
+					<div className='h-4 w-32 rounded-full bg-slate-800/80' />
+					<div className='flex w-full flex-col gap-3'>
+						<div className='h-3 w-full rounded-full bg-slate-800/80' />
+						<div className='h-3 w-3/4 rounded-full bg-slate-800/60' />
 					</div>
 				</div>
 			</div>
 		);
 	}
 
+	const { id, height, weight, types } = pokemonObject;
+	const heightMetric = formatMetric(height, 10, ' m');
+	const weightMetric = formatMetric(weight, 10, ' kg');
+
+	const handleCardClick = () => {
+		if (pokemonObject?.id) {
+			vibrate(30);
+		}
+	};
+
+	const handleFavoriteClick = (e: React.MouseEvent) => {
+		e.preventDefault();
+		e.stopPropagation();
+		toggleFavorite(name);
+		vibrate([50, 100, 50]);
+		playHoverSound();
+	};
+
+	const handleCardHover = () => {
+		if (pokemonObject?.id) {
+			playPokemonCry(pokemonObject.id);
+		}
+	};
+
 	return (
-		<div className='relative p-4 m-4 border rounded-xl bg-white shadow-lg dark:bg-gray-800 dark:border-gray-700 hover:scale-105 transform transition-transform duration-300 ease-in-out'>
-			<Link href={`/pokemon/${name}`} passHref>
-				<div className='group flex flex-col items-center cursor-pointer'>
-					<div className='relative w-32 h-32 mb-4'>
-						<Image src={pokemonObject?.sprites.other['official-artwork'].front_default || ''} alt={pokemonObject?.name || 'Pokemon'} className='object-cover rounded-lg' width={128} height={128} />
+		<article
+			ref={(node) => {
+				// Combine refs
+				(tiltRef as any).current = node;
+				(intersectionRef as any).current = node;
+			}}
+			onMouseMove={handleMouseMove}
+			onMouseLeave={handleMouseLeave}
+			onMouseEnter={() => {
+				handleMouseEnter();
+				handleCardHover();
+			}}
+			style={{
+				opacity: isVisible ? 1 : 0,
+				transform: isVisible ? 'translateY(0)' : 'translateY(20px)',
+				transition: 'opacity 0.6s ease-out, transform 0.6s ease-out',
+			}}
+			className={cn(
+				'relative flex h-full flex-col overflow-hidden rounded-3xl border border-white/10 bg-slate-900/80 p-5 shadow-lg transition duration-300 hover:shadow-2xl',
+				'bg-gradient-to-br backdrop-blur-xl',
+				cardGradient,
+				className,
+			)}
+		>
+			{/* Tilt glare effect */}
+			<div className='tilt-glare pointer-events-none absolute inset-0 rounded-3xl opacity-0 transition-opacity duration-300 hover:opacity-100' />
+
+			<div className='pointer-events-none absolute -top-20 right-0 h-40 w-40 rounded-full bg-white/10 blur-3xl' />
+			<div className='pointer-events-none absolute bottom-0 left-0 h-24 w-24 rounded-full bg-white/5 blur-3xl' />
+
+			<button
+				onClick={handleFavoriteClick}
+				aria-pressed={isFavorite}
+				aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+				className='absolute right-4 top-4 z-10 rounded-full border border-white/20 bg-white/10 p-2 text-white transition-all duration-200 hover:scale-110 hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60'
+			>
+				<Tooltip text={isFavorite ? 'Remove from favorites' : 'Add to favorites'}>
+					{isFavorite ? <Icons.heartFilled className='h-5 w-5' /> : <Icons.heart className='h-5 w-5' />}
+				</Tooltip>
+			</button>
+
+			<Link
+				href={`/pokemon/${name}`}
+				onClick={handleCardClick}
+				className='relative flex h-full flex-1 flex-col items-center text-center justify-between'
+				aria-label={`View ${name} details`}
+			>
+				<span className='mb-3 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-medium uppercase tracking-[0.4em] text-white/70'>
+					#{id.toString().padStart(3, '0')}
+				</span>
+				<div className='relative mb-4 flex h-32 w-32 items-center justify-center drop-shadow-[0_20px_35px_rgba(15,23,42,0.45)]'>
+					{!imageLoaded && <div className='absolute inset-0 rounded-2xl bg-white/20 backdrop-blur animate-pulse' />}
+					{imageSrc ? (
+						<Image
+							src={imageSrc}
+							alt={pokemonObject?.name || 'Pokémon'}
+							width={160}
+							height={160}
+							className={cn(
+								'object-contain transition-opacity duration-500',
+								imageLoaded ? 'opacity-100' : 'opacity-0',
+							)}
+								priority={!!priority}
+								loading={priority ? 'eager' : 'lazy'}
+								decoding='async'
+								onLoad={() => setImageLoaded(true)}
+						/>
+					) : (
+						<div className='flex h-full w-full items-center justify-center rounded-2xl border border-dashed border-white/20 text-xs text-white/60'>
+							No image
+						</div>
+					)}
+				</div>
+
+				<h2 className='text-lg font-semibold text-white'>{capitalize(name)}</h2>
+
+				<div className='mt-3 flex flex-wrap justify-center gap-2'>
+					{types.map((type) => {
+						const style = TYPE_BADGE_COLORS[type.type.name] ?? TYPE_BADGE_COLORS.default;
+						return (
+							<span
+								key={type.type.name}
+								className={cn(
+									'inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wide backdrop-blur',
+									style,
+								)}
+							>
+								{capitalize(type.type.name)}
+							</span>
+						);
+					})}
+				</div>
+
+				<div className='mt-6 grid w-full grid-cols-2 gap-3 text-left text-sm text-white/80'>
+					<div className='rounded-2xl border border-white/10 bg-white/10 px-3 py-2 backdrop-blur'>
+						<span className='block text-[10px] uppercase tracking-widest text-white/60'>Height</span>
+						<span className='text-sm font-semibold text-white'>{heightMetric}</span>
 					</div>
-					<h2 className='text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2 group-hover:text-blue-500'>{name.charAt(0).toUpperCase() + name.slice(1)}</h2>
-					<div className='flex flex-wrap justify-center'>
-						{pokemonObject?.types.map((type) => {
-							const { bg, text } = typeColors[type.type.name] || typeColors.unknown;
-							return (
-								<span key={type.type.name} className={`inline-block px-3 py-1 text-xs font-medium rounded-full mr-1 ${bg} ${text}`}>
-									{type.type.name.charAt(0).toUpperCase() + type.type.name.slice(1)}
-								</span>
-							);
-						})}
+					<div className='rounded-2xl border border-white/10 bg-white/10 px-3 py-2 backdrop-blur'>
+						<span className='block text-[10px] uppercase tracking-widest text-white/60'>Weight</span>
+						<span className='text-sm font-semibold text-white'>{weightMetric}</span>
 					</div>
 				</div>
 			</Link>
-			<div onClick={handleFavoriteClick} className='absolute top-2 right-2 bg-gray-100 dark:bg-gray-700 rounded-full p-1 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-200'>
-				<Tooltip text={isFavorite ? 'Remove from favorites' : 'Add to favorites'}>{isFavorite ? <Icons.heartFilled aria-label='favorites' className='h-6 w-6' /> : <Icons.heart aria-label='favorites' className='h-6 w-6' />}</Tooltip>
-			</div>
-		</div>
+		</article>
 	);
 };

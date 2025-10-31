@@ -1,16 +1,22 @@
 'use client';
+import { Suspense } from 'react';
+
 import PokedataCard from './pokedata-card';
 import SpeciesInfo from './species-info';
-import { Suspense } from 'react';
 import Loading from '@/components/loading';
 import { findPokemonDBImage, useGetPokemon } from '@/hooks/use-pokeapi';
+import { PokemonData } from '@/types';
 
 type Props = {
 	pokemonName: string;
+	initialData?: PokemonData;
+	accentType?: string | null;
 };
 
-export default function PokemonDetails({ pokemonName }: Props) {
-	const { data, isLoading, isError } = useGetPokemon(pokemonName);
+export default function PokemonDetails({ pokemonName, initialData, accentType }: Props) {
+	const { data, isLoading, isError } = useGetPokemon(pokemonName, {
+		initialData,
+	});
 
 	if (isLoading) {
 		return <Loading />;
@@ -21,20 +27,16 @@ export default function PokemonDetails({ pokemonName }: Props) {
 	}
 
 	return (
-		<section className='flex h-full flex-col gap-10 md:flex-row  md:grid-cols-2'>
-			{data && (
-				<div className='grid grid-cols-1 md:grid-cols-8'>
-					<div className='col-start-1 col-span-3'>
-						<PokedataCard pokemonData={data} pokemonImageURL={findPokemonDBImage(data.id)} />
-					</div>
+		<section className='grid gap-10 xl:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]'>
+			{data ? (
+				<>
+					<PokedataCard pokemonData={data} pokemonImageURL={findPokemonDBImage(data.id)} accentType={accentType} />
 
-					<div className='md:col-start-4 md:col-span-full'>
-						<Suspense fallback={<Loading />}>
-							<SpeciesInfo pokemonData={data} />
-						</Suspense>
-					</div>
-				</div>
-			)}
+					<Suspense fallback={<Loading />}>
+						<SpeciesInfo pokemonData={data} accentType={accentType} />
+					</Suspense>
+				</>
+			) : null}
 		</section>
 	);
 }

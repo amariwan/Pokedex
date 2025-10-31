@@ -1,21 +1,63 @@
-export const getPokemonList = async () => {
-  const response = await fetch(
-    "https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0"
-  );
-  const data = await response.json();
+import {
+  PokemonData,
+  PokemonListResponse,
+  NamedAPIResource,
+  PokedexResponse,
+  SpeciesInfo,
+  EvolutionChain,
+} from "@/types";
+import { fetchFromPokeApi } from "./pokeApiClient";
+
+const MAX_POKEMON = 100_000;
+
+export const getPokemonList = async (
+  limit = MAX_POKEMON,
+  offset = 0
+): Promise<NamedAPIResource[]> => {
+  const params = new URLSearchParams({
+    limit: String(limit),
+    offset: String(offset),
+  });
+
+  const data = await fetchFromPokeApi<PokemonListResponse>(`/pokemon?${params}`);
   return data.results;
 };
 
 export const getAllPokemonNames = async (): Promise<string[]> => {
-  const response = await fetch("https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0");
-  const data = await response.json();
-  return data.results.map((pokemon: { name: string }) => pokemon.name);
+  const results = await getPokemonList();
+  return results.map((pokemon) => pokemon.name);
 };
 
+export const getPokemon = async (name: string): Promise<PokemonData> => {
+  return fetchFromPokeApi<PokemonData>(`/pokemon/${name.toLowerCase()}`);
+};
 
-export const getPokemon = async (name: string) => {
-  const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);
+export const getPokemonDetailsBatch = async (
+  names: string[]
+): Promise<PokemonData[]> => {
+  return Promise.all(names.map((n) => getPokemon(n)));
+};
 
-  const data = await response.json();
-  return data;
+export const getPokemonFromRegion = async (
+  region: string
+): Promise<PokedexResponse["pokemon_entries"]> => {
+  const data = await fetchFromPokeApi<PokedexResponse>(`/pokedex/${region}`);
+  return data.pokemon_entries;
+};
+
+export const getSpeciesByUrl = async (url: string): Promise<SpeciesInfo> => {
+  return fetchFromPokeApi<SpeciesInfo>(url);
+};
+
+export const getEvolutionChainByUrl = async (url: string): Promise<EvolutionChain> => {
+  return fetchFromPokeApi<EvolutionChain>(url);
+};
+
+interface TypeResponse {
+  pokemon: { pokemon: NamedAPIResource }[];
+}
+
+export const getPokemonByType = async (type: string): Promise<string[]> => {
+  const data = await fetchFromPokeApi<TypeResponse>(`/type/${type}`);
+  return data.pokemon.map(({ pokemon }) => pokemon.name);
 };

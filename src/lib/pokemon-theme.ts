@@ -1,0 +1,66 @@
+export const TYPE_GRADIENTS: Record<string, string> = {
+	grass: 'from-emerald-600/35 via-emerald-500/20 to-slate-950',
+	fire: 'from-orange-500/35 via-rose-500/25 to-slate-950',
+	water: 'from-sky-500/40 via-cyan-500/25 to-slate-950',
+	electric: 'from-yellow-400/45 via-amber-500/20 to-slate-950',
+	psychic: 'from-fuchsia-500/40 via-purple-500/25 to-slate-950',
+	ice: 'from-cyan-300/45 via-sky-400/25 to-slate-950',
+	dragon: 'from-indigo-500/40 via-purple-500/25 to-slate-950',
+	dark: 'from-slate-900/70 via-slate-800/60 to-slate-950',
+	fairy: 'from-pink-400/45 via-purple-300/25 to-slate-950',
+	fighting: 'from-amber-600/45 via-orange-500/25 to-slate-950',
+	flying: 'from-indigo-400/40 via-sky-400/25 to-slate-950',
+	poison: 'from-purple-500/40 via-violet-500/25 to-slate-950',
+	ground: 'from-amber-600/45 via-amber-500/20 to-slate-950',
+	rock: 'from-yellow-700/45 via-amber-500/25 to-slate-950',
+	bug: 'from-lime-500/40 via-emerald-500/25 to-slate-950',
+	ghost: 'from-violet-500/35 via-purple-600/30 to-slate-950',
+	steel: 'from-slate-400/35 via-slate-500/20 to-slate-950',
+	default: 'from-slate-700/40 via-slate-800/40 to-slate-950',
+};
+
+export const TYPE_BADGE_COLORS: Record<string, string> = {
+	grass: 'bg-emerald-500/20 text-emerald-100 border border-emerald-400/30',
+	fire: 'bg-orange-500/20 text-orange-100 border border-orange-400/30',
+	water: 'bg-sky-500/20 text-sky-100 border border-sky-400/30',
+	electric: 'bg-amber-400/20 text-amber-100 border border-amber-300/40',
+	psychic: 'bg-fuchsia-500/20 text-fuchsia-100 border border-fuchsia-400/30',
+	ice: 'bg-cyan-400/20 text-cyan-100 border border-cyan-300/30',
+	dragon: 'bg-indigo-500/20 text-indigo-100 border border-indigo-400/30',
+	dark: 'bg-slate-800/60 text-slate-100 border border-slate-700/60',
+	fairy: 'bg-pink-400/20 text-pink-100 border border-pink-300/40',
+	fighting: 'bg-orange-600/25 text-orange-50 border border-orange-500/40',
+	flying: 'bg-sky-400/20 text-sky-100 border border-sky-300/40',
+	poison: 'bg-purple-600/20 text-purple-100 border border-purple-500/40',
+	ground: 'bg-amber-700/25 text-amber-100 border border-amber-600/40',
+	rock: 'bg-yellow-700/25 text-yellow-100 border border-yellow-600/40',
+	bug: 'bg-lime-500/25 text-lime-100 border border-lime-400/40',
+	ghost: 'bg-violet-600/20 text-violet-100 border border-violet-500/40',
+	steel: 'bg-slate-500/25 text-slate-100 border border-slate-400/40',
+	default: 'bg-white/10 text-white border border-white/20',
+};
+
+export const TYPE_ACCENT_BARS: Record<string, string> = {
+	grass: 'bg-gradient-to-r from-emerald-400 via-emerald-500 to-emerald-600',
+	fire: 'bg-gradient-to-r from-orange-400 via-orange-500 to-rose-500',
+	water: 'bg-gradient-to-r from-sky-400 via-cyan-500 to-sky-600',
+	electric: 'bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-500',
+	psychic: 'bg-gradient-to-r from-fuchsia-400 via-purple-500 to-fuchsia-600',
+	ice: 'bg-gradient-to-r from-cyan-300 via-sky-400 to-cyan-500',
+	dragon: 'bg-gradient-to-r from-indigo-400 via-purple-500 to-indigo-600',
+	dark: 'bg-gradient-to-r from-slate-600 via-slate-700 to-slate-800',
+	fairy: 'bg-gradient-to-r from-pink-300 via-fuchsia-400 to-pink-500',
+	fighting: 'bg-gradient-to-r from-amber-500 via-orange-500 to-rose-600',
+	flying: 'bg-gradient-to-r from-sky-400 via-indigo-400 to-sky-500',
+	poison: 'bg-gradient-to-r from-purple-400 via-violet-500 to-purple-600',
+	ground: 'bg-gradient-to-r from-amber-500 via-yellow-600 to-amber-700',
+	rock: 'bg-gradient-to-r from-yellow-600 via-amber-600 to-yellow-700',
+	bug: 'bg-gradient-to-r from-lime-400 via-emerald-500 to-lime-500',
+	ghost: 'bg-gradient-to-r from-violet-500 via-purple-600 to-violet-700',
+	steel: 'bg-gradient-to-r from-slate-400 via-slate-500 to-slate-600',
+	default: 'bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600',
+};
+
+export const typeGradient = (type?: string | null) => TYPE_GRADIENTS[type ?? ''] ?? TYPE_GRADIENTS.default;
+
+export const typeBadgeClass = (type?: string | null) => TYPE_BADGE_COLORS[type ?? ''] ?? TYPE_BADGE_COLORS.default;

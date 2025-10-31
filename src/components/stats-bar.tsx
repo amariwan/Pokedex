@@ -4,9 +4,10 @@ import gsap from 'gsap';
 
 type Props = {
 	value: number;
+	accentClassName?: string;
 };
 
-export const StatsBar = ({ value }: Props) => {
+export const StatsBar = ({ value, accentClassName }: Props) => {
 	const barRef = useRef<HTMLDivElement>(null!);
 
 	useEffect(() => {
@@ -18,8 +19,12 @@ export const StatsBar = ({ value }: Props) => {
 	}, [value]);
 
 	return (
-		<div className='bg-gray-200 w-full h-4 rounded-full overflow-hidden'>
-			<div ref={barRef} className='h-full bg-green-600' style={{ width: '0%' }}></div>
+		<div className='h-2 w-full overflow-hidden rounded-full bg-white/10'>
+			<div
+				ref={barRef}
+				className={`h-full ${accentClassName ?? 'bg-emerald-500'}`}
+				style={{ width: '0%' }}
+			/>
 		</div>
 	);
 };

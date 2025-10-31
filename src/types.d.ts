@@ -41,6 +41,11 @@ export interface Type {
   };
 }
 
+export interface NamedAPIResource {
+  name: string;
+  url: string;
+}
+
 export interface Ability {
   name: string;
   url: string;
@@ -76,15 +81,13 @@ export interface Pokemon {
 }
 
 // Detailed Pokémon data, including stats and abilities
-export interface PokemonData {
-  id: number;
-  name: string;
-  types: Type[];
+export interface PokemonData extends Pokemon {
   stats: PokemonStat[];
   abilities: PokemonAbility[];
   weight: number;
   height: number;
   species: Species;
+  base_experience: number;
 }
 
 export interface PokemonStat {
@@ -186,9 +189,45 @@ export interface SpeciesInfo {
   }[];
 }
 
+export interface EvolutionDetail {
+  trigger: NamedAPIResource;
+  min_level: number | null;
+  item: NamedAPIResource | null;
+  held_item: NamedAPIResource | null;
+  time_of_day: string;
+  known_move: NamedAPIResource | null;
+  known_move_type: NamedAPIResource | null;
+  location: NamedAPIResource | null;
+  needs_overworld_rain: boolean;
+  turn_upside_down: boolean;
+  party_species: NamedAPIResource | null;
+  party_type: NamedAPIResource | null;
+  trade_species: NamedAPIResource | null;
+  relative_physical_stats: number | null;
+  gender: number | null;
+  happiness: number | null;
+  beauty: number | null;
+  affection: number | null;
+};
+
+export interface EvolutionChainLink {
+  species: NamedAPIResource;
+  evolves_to: EvolutionChainLink[];
+  evolution_details: EvolutionDetail[];
+}
+
+export interface EvolutionChain {
+  id: number;
+  chain: EvolutionChainLink;
+}
+
 // Props for various components
 export type PokemonCardProps = {
   name: string;
+  initialData?: PokemonData;
+  // If true this image should be prioritized for LCP (renders eager)
+  priority?: boolean;
+  className?: string;
 };
 
 export type PokemonName = {
@@ -198,6 +237,22 @@ export type PokemonName = {
 export type PokemonDataProps = {
   pokemonData: PokemonData;
 };
+
+export interface PokemonListResponse {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: NamedAPIResource[];
+}
+
+export interface PokedexEntry {
+  entry_number: number;
+  pokemon_species: NamedAPIResource;
+}
+
+export interface PokedexResponse {
+  pokemon_entries: PokedexEntry[];
+}
 
 export type RatioBarProps = {
   value: number;
@@ -224,15 +279,6 @@ export interface Color {
   name: string;
 }
 
-// Refined interface for species info, used in components
-export interface SpeciesInfoX {
-  flavor_text_entries: FlavorTextEntry[];
-  color: Color | null;
-  egg_groups: EggGroup[];
-  gender_rate: number;
-  capture_rate: number;
-}
-
 export interface SpeciesInfoProps {
   pokemonData: {
     species: {
@@ -244,6 +290,7 @@ export interface SpeciesInfoProps {
       };
     }[];
   };
+  accentType?: string | null;
 }
 
 export interface LanguageOption {
