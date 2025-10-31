@@ -1,5 +1,5 @@
-import { defineConfig } from 'vitest/config';
 import path from 'path';
+import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
 	test: {
@@ -15,10 +15,14 @@ export default defineConfig({
 			enabled: true,
 			include: ['src/lib/**/*.ts', 'src/app/page.tsx', 'src/app/pokemon/[slug]/page.tsx'],
 			exclude: ['src/lib/gsap/**', 'src/lib/data/**'],
-			lines: 100,
-			functions: 100,
-			branches: 100,
-			statements: 100,
+			thresholds: {
+				global: {
+					lines: 100,
+					functions: 100,
+					branches: 100,
+					statements: 100,
+				},
+			},
 		},
 	},
 	resolve: {
