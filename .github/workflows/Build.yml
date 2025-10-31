@@ -18,8 +18,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: 'lts/*'
-          cache: 'pnpm'
+          node-version: "lts/*"
+          cache: "pnpm"
 
       - name: Install pnpm
         run: |
@@ -61,4 +61,3 @@ jobs:
         with:
           name: build
           path: ./dist # Angepasster Pfad zum Build-Output
-
