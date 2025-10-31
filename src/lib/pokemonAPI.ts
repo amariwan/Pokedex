@@ -1,22 +1,29 @@
 import {
-  PokemonData,
-  PokemonListResponse,
-  NamedAPIResource,
-  PokedexResponse,
-  SpeciesInfo,
-  EvolutionChain,
+    EvolutionChain,
+    NamedAPIResource,
+    PokedexResponse,
+    PokemonData,
+    PokemonListResponse,
+    SpeciesInfo,
 } from "@/types";
 import { fetchFromPokeApi } from "./pokeApiClient";
+import { validatePagination, validatePokemonName } from "./validation";
 
-const MAX_POKEMON = 100_000;
+/**
+ * Maximum limit for fetching all Pokemon (PokeAPI has ~1000+ entries).
+ * Using conservative upper bound to prevent excessive requests.
+ */
+const MAX_POKEMON_LIMIT = 100_000;
 
 export const getPokemonList = async (
-  limit = MAX_POKEMON,
+  limit = MAX_POKEMON_LIMIT,
   offset = 0
 ): Promise<NamedAPIResource[]> => {
+  const { limit: validLimit, offset: validOffset } = validatePagination(limit, offset);
+
   const params = new URLSearchParams({
-    limit: String(limit),
-    offset: String(offset),
+    limit: String(validLimit),
+    offset: String(validOffset),
   });
 
   const data = await fetchFromPokeApi<PokemonListResponse>(`/pokemon?${params}`);
@@ -29,7 +36,8 @@ export const getAllPokemonNames = async (): Promise<string[]> => {
 };
 
 export const getPokemon = async (name: string): Promise<PokemonData> => {
-  return fetchFromPokeApi<PokemonData>(`/pokemon/${name.toLowerCase()}`);
+  const validName = validatePokemonName(name);
+  return fetchFromPokeApi<PokemonData>(`/pokemon/${validName}`);
 };
 
 export const getPokemonDetailsBatch = async (

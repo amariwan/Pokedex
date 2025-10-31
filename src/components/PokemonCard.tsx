@@ -6,22 +6,16 @@ import { useEffect, useMemo, useState } from 'react';
 
 import Tooltip from '@/components/Tooltip';
 import { useIntersectionObserver } from '@/hooks/use-intersection-observer';
-import { findPokemonDBImage, useGetPokemon } from '@/hooks/use-pokeapi';
+import { useGetPokemon } from '@/hooks/use-pokeapi';
 import { useSound } from '@/hooks/use-sound';
 import { useTiltEffect } from '@/hooks/use-tilt-effect';
-import { capitalize, cn } from '@/lib/utils';
+import { formatMetric } from '@/lib/formatters';
+import { getPokemonArtworkUrl } from '@/lib/pokemon-images';
 import { TYPE_BADGE_COLORS, typeGradient } from '@/lib/pokemon-theme';
+import { capitalize, cn } from '@/lib/utils';
 import { useFavoritesStore } from '@/stores/useFavoritesStore';
 import { PokemonCardProps } from '@/types';
 import { Icons } from './icons';
-
-const formatMetric = (value?: number, divisor = 10, unit = '') => {
-	if (value === undefined) {
-		return '—';
-	}
-	const formatted = (value / divisor).toFixed(1);
-	return `${formatted}${unit}`;
-};
 
 export const PokemonCard = ({ name, initialData, priority, className }: PokemonCardProps) => {
 	const [imageLoaded, setImageLoaded] = useState(false);
@@ -56,7 +50,7 @@ export const PokemonCard = ({ name, initialData, priority, className }: PokemonC
 
 		return (
 			pokemonObject.sprites.other['official-artwork'].front_default ??
-			findPokemonDBImage(pokemonObject.id)
+			getPokemonArtworkUrl(pokemonObject.id)
 		);
 	}, [pokemonObject]);
 
@@ -106,9 +100,13 @@ export const PokemonCard = ({ name, initialData, priority, className }: PokemonC
 	return (
 		<article
 			ref={(node) => {
-				// Combine refs
-				(tiltRef as any).current = node;
-				(intersectionRef as any).current = node;
+				// Combine refs for tilt and intersection observer
+				if (tiltRef && 'current' in tiltRef) {
+					(tiltRef.current as HTMLElement | null) = node;
+				}
+				if (intersectionRef && 'current' in intersectionRef) {
+					(intersectionRef.current as HTMLElement | null) = node;
+				}
 			}}
 			onMouseMove={handleMouseMove}
 			onMouseLeave={handleMouseLeave}

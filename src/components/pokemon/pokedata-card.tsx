@@ -1,11 +1,11 @@
-import React from 'react';
 
-import PokemonImageWithShiny from './PokemonImageWithShiny';
 import { AnimatedValue } from '@/components/animated-value';
 import { StatsBar } from '@/components/stats-bar';
+import { formatMetricValue } from '@/lib/formatters';
 import { TYPE_ACCENT_BARS, typeBadgeClass, typeGradient } from '@/lib/pokemon-theme';
 import { capitalize, cn } from '@/lib/utils';
 import { PokemonData } from '@/types';
+import PokemonImageWithShiny from './PokemonImageWithShiny';
 
 type Props = {
 	pokemonData: PokemonData;
@@ -22,33 +22,15 @@ const STAT_LABELS: Record<string, string> = {
 	speed: 'Speed',
 };
 
-type QuickValue = {
-	raw: number | null;
-	suffix?: string;
-	round?: number;
-};
-
-const formatMetric = (value?: number, divisor = 10, unit?: string, precision = 1): QuickValue => {
-	if (value === undefined || value === null) {
-		return { raw: null, suffix: unit, round: precision };
-	}
-	const metric = value / divisor;
-	return {
-		raw: Number(metric.toFixed(precision)),
-		suffix: unit,
-		round: precision,
-	};
-};
-
 export default function PokedataCard({ pokemonData, pokemonImageURL, accentType }: Props) {
 	const primaryType = accentType ?? pokemonData.types?.[0]?.type.name ?? 'default';
 	const gradient = typeGradient(primaryType);
 	const barAccent = TYPE_ACCENT_BARS[primaryType] ?? TYPE_ACCENT_BARS.default;
 
-	const height = formatMetric(pokemonData.height, 10, ' m');
-	const weight = formatMetric(pokemonData.weight, 10, ' kg');
+	const height = formatMetricValue(pokemonData.height, 10, ' m');
+	const weight = formatMetricValue(pokemonData.weight, 10, ' kg');
 	const baseExperience = pokemonData.base_experience ?? null;
-	const baseExperienceValue: QuickValue =
+	const baseExperienceValue =
 		typeof baseExperience === 'number'
 			? { raw: baseExperience, suffix: undefined, round: 0 }
 			: { raw: null };

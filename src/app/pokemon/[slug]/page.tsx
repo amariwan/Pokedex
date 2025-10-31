@@ -7,17 +7,28 @@ import { Button } from '@/components/ui/button';
 import { typeGradient } from '@/lib/pokemon-theme';
 import { getPokemon } from '@/lib/pokemonAPI';
 import { capitalize } from '@/lib/utils';
+import type { PokemonData } from '@/types';
+
+type Awaitable<T> = T | Promise<T>;
+
+type PokemonPageParams = { slug: string };
 
 type PokemonPageProps = {
-	params: Promise<{ slug: string }>;
+	params: Awaitable<PokemonPageParams>;
 };
 
 // Note: route-level revalidate is intentionally removed because
 // `next.config.mjs` enables `cacheComponents` globally.
 
-export async function generateMetadata({ params }: PokemonPageProps): Promise<Metadata> {
+const fetchPokemonFromParams = async (params: Awaitable<PokemonPageParams>): Promise<{ slug: string; pokemon: PokemonData | null }> => {
 	const { slug } = await params;
 	const pokemon = await getPokemon(slug).catch(() => null);
+
+	return { slug, pokemon };
+};
+
+export async function generateMetadata({ params }: PokemonPageProps): Promise<Metadata> {
+	const { slug, pokemon } = await fetchPokemonFromParams(params);
 
 	if (!pokemon) {
 		return {
@@ -48,8 +59,7 @@ export async function generateMetadata({ params }: PokemonPageProps): Promise<Me
 }
 
 export default async function PokemonPage({ params }: PokemonPageProps) {
-	const { slug } = await params;
-	const pokemon = await getPokemon(slug).catch(() => null);
+	const { slug, pokemon } = await fetchPokemonFromParams(params);
 
 	if (!pokemon) {
 		notFound();

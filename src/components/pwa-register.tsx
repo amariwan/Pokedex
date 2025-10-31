@@ -1,9 +1,15 @@
 "use client";
 
+import { logger } from '@/lib/logger';
 import { useEffect, useState } from 'react';
 
+interface BeforeInstallPromptEvent extends Event {
+  prompt: () => Promise<void>;
+  userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>;
+}
+
 export default function PwaRegister() {
-  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [isRegistered, setIsRegistered] = useState(false);
 
   useEffect(() => {
@@ -14,11 +20,11 @@ export default function PwaRegister() {
         navigator.serviceWorker
           .register('/sw.js')
           .then((reg) => {
-            console.log('Service worker registered:', reg);
+            logger.info('Service worker registered', { scope: reg.scope });
             setIsRegistered(true);
           })
           .catch((err) => {
-            console.warn('SW registration failed:', err);
+            logger.error('Service worker registration failed', err);
           });
       };
       window.addEventListener('load', onLoad);
@@ -28,23 +34,23 @@ export default function PwaRegister() {
   }, []);
 
   useEffect(() => {
-    const handler = (e: any) => {
+    const handler = (e: Event) => {
       e.preventDefault();
-      setDeferredPrompt(e);
+      setDeferredPrompt(e as BeforeInstallPromptEvent);
     };
-    window.addEventListener('beforeinstallprompt', handler as EventListener);
-    return () => window.removeEventListener('beforeinstallprompt', handler as EventListener);
+    window.addEventListener('beforeinstallprompt', handler);
+    return () => window.removeEventListener('beforeinstallprompt', handler);
   }, []);
 
   const promptInstall = async () => {
     if (!deferredPrompt) return;
     try {
-      deferredPrompt.prompt();
-      const choice = await deferredPrompt.userChoice;
-      console.log('PWA install choice', choice);
+      await deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      logger.debug('PWA install outcome', { outcome });
       setDeferredPrompt(null);
     } catch (err) {
-      console.warn('PWA prompt failed', err);
+      logger.error('PWA install prompt failed', err);
     }
   };
 

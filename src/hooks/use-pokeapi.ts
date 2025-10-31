@@ -1,23 +1,24 @@
 "use client";
 import {
-  NamedAPIResource,
-  PokemonData,
-  SpeciesInfo,
-  PokedexEntry,
-  EvolutionChain,
+    getEvolutionChainByUrl,
+    getPokemon,
+    getPokemonFromRegion,
+    getPokemonList,
+    getSpeciesByUrl,
+} from "@/lib/pokemonAPI";
+import {
+    EvolutionChain,
+    NamedAPIResource,
+    PokedexEntry,
+    PokemonData,
+    SpeciesInfo,
 } from "@/types";
 import {
-  useQuery,
-  UseQueryOptions,
-  keepPreviousData,
+    keepPreviousData,
+    useQuery,
+    UseQueryOptions,
+    UseQueryResult,
 } from "@tanstack/react-query";
-import {
-  getPokemon,
-  getPokemonFromRegion,
-  getPokemonList,
-  getSpeciesByUrl,
-  getEvolutionChainByUrl,
-} from "@/lib/pokemonAPI";
 
 const pokemonQueryKeys = {
   all: ["pokemon"] as const,
@@ -46,7 +47,7 @@ type BasePokemonQueryOptions<TData> = Omit<
 export const useGetPokemon = (
   pokemonName: string,
   options?: BasePokemonQueryOptions<PokemonData>
-) =>
+): UseQueryResult<PokemonData, Error> =>
   useQuery<PokemonData, Error, PokemonData, PokemonDetailQueryKey>({
     queryKey: pokemonQueryKeys.detail(pokemonName),
     queryFn: () => getPokemon(pokemonName),
@@ -58,7 +59,7 @@ export const useGetPokemon = (
 export const useGetPokemonTypes = (
   pokemonName: string,
   options?: BasePokemonQueryOptions<PokemonData["types"]>
-) =>
+): UseQueryResult<PokemonData["types"], Error> =>
   useQuery<
     PokemonData,
     Error,
@@ -73,7 +74,7 @@ export const useGetPokemonTypes = (
     ...options,
   });
 
-export const useGetPokemonFromRegion = (region: string) =>
+export const useGetPokemonFromRegion = (region: string): UseQueryResult<PokedexEntry[], Error> =>
   useQuery<PokedexEntry[], Error, PokedexEntry[], PokemonRegionQueryKey>({
     queryKey: pokemonQueryKeys.region(region),
     queryFn: () => getPokemonFromRegion(region),
@@ -81,7 +82,7 @@ export const useGetPokemonFromRegion = (region: string) =>
     staleTime: 1000 * 60 * 10,
   });
 
-export const useGetAllPokemon = () =>
+export const useGetAllPokemon = (): UseQueryResult<NamedAPIResource[], Error> =>
   useQuery<
     NamedAPIResource[],
     Error,
@@ -93,7 +94,10 @@ export const useGetAllPokemon = () =>
     staleTime: 1000 * 60 * 10,
   });
 
-export const useGetAllPokemonPage = (limit: number, offset: number) =>
+export const useGetAllPokemonPage = (
+  limit: number,
+  offset: number
+): UseQueryResult<NamedAPIResource[], Error> =>
   useQuery<
     NamedAPIResource[],
     Error,
@@ -106,13 +110,7 @@ export const useGetAllPokemonPage = (limit: number, offset: number) =>
     staleTime: 1000 * 60 * 5,
   });
 
-export const useFindPokemonImage = (index: number) =>
-  `https://github.com/PokeAPI/sprites/blob/master/sprites/pokemon/${index}.png?raw=true`;
-
-export const findPokemonDBImage = (pokemonId: number) =>
-  `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemonId}.png`;
-
-export const useGetSpeciesInfo = (url: string) =>
+export const useGetSpeciesInfo = (url: string): UseQueryResult<SpeciesInfo, Error> =>
   useQuery<SpeciesInfo, Error, SpeciesInfo, PokemonSpeciesQueryKey>({
     queryKey: pokemonQueryKeys.species(url),
     queryFn: () => getSpeciesByUrl(url),
@@ -120,7 +118,7 @@ export const useGetSpeciesInfo = (url: string) =>
     staleTime: 1000 * 60 * 10,
   });
 
-export const useGetEvolutionChain = (url: string) =>
+export const useGetEvolutionChain = (url: string): UseQueryResult<EvolutionChain, Error> =>
   useQuery<EvolutionChain, Error, EvolutionChain, PokemonEvolutionQueryKey>({
     queryKey: pokemonQueryKeys.evolutionChain(url),
     queryFn: () => getEvolutionChainByUrl(url),

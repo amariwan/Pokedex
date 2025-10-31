@@ -4,111 +4,15 @@ import { useMemo, useState } from 'react';
 import Loading from '@/components/loading';
 import { RatioBar } from '@/components/ratio-bar';
 import { useGetEvolutionChain, useGetSpeciesInfo } from '@/hooks/use-pokeapi';
+import { buildEvolutionStages, formatEvolutionDetail } from '@/lib/evolution-helpers';
+import { formatLabel, sanitizeFlavorText } from '@/lib/formatters';
 import { typeGradient } from '@/lib/pokemon-theme';
 import { capitalize } from '@/lib/utils';
 import {
-	EvolutionChainLink,
-	FlavorTextEntry,
-	LanguageOption,
-	SpeciesInfoProps,
+    FlavorTextEntry,
+    LanguageOption,
+    SpeciesInfoProps,
 } from '@/types';
-
-const sanitizeFlavorText = (text: string) => text.replace(/[\f\n\r]+/g, ' ').trim();
-
-const formatLabel = (value?: string | null) => {
-	if (!value) return 'Unknown';
-	return value
-		.split('-')
-		.map((segment) => capitalize(segment))
-		.join(' ');
-};
-
-const buildEvolutionStages = (chain?: EvolutionChainLink | null) => {
-	if (!chain) return [];
-	const stages: EvolutionChainLink[][] = [];
-
-	const traverse = (node: EvolutionChainLink, depth = 0) => {
-		if (!stages[depth]) {
-			stages[depth] = [];
-		}
-
-		if (!stages[depth].some((existing) => existing.species.name === node.species.name)) {
-			stages[depth].push(node);
-		}
-
-		node.evolves_to?.forEach((child) => traverse(child, depth + 1));
-	};
-
-	traverse(chain);
-	return stages;
-};
-
-const formatEvolutionDetail = (link: EvolutionChainLink) => {
-	if (!link.evolution_details?.length) {
-		return 'Base form';
-	}
-
-	const detail = link.evolution_details[0];
-	const parts: string[] = [];
-
-	if (detail.min_level !== null && detail.min_level !== undefined) {
-		parts.push(`Lvl ${detail.min_level}`);
-	}
-
-	if (detail.trigger?.name) {
-		parts.push(formatLabel(detail.trigger.name));
-	}
-
-	if (detail.item?.name) {
-		parts.push(`Use ${formatLabel(detail.item.name)}`);
-	}
-
-	if (detail.held_item?.name) {
-		parts.push(`Hold ${formatLabel(detail.held_item.name)}`);
-	}
-
-	if (detail.time_of_day) {
-		parts.push(formatLabel(detail.time_of_day));
-	}
-
-	if (detail.location?.name) {
-		parts.push(`At ${formatLabel(detail.location.name)}`);
-	}
-
-	if (detail.known_move?.name) {
-		parts.push(`Move ${formatLabel(detail.known_move.name)}`);
-	}
-
-	if (detail.known_move_type?.name) {
-		parts.push(`Move Type ${formatLabel(detail.known_move_type.name)}`);
-	}
-
-	if (detail.trade_species?.name) {
-		parts.push(`Trade with ${formatLabel(detail.trade_species.name)}`);
-	}
-
-	if (detail.needs_overworld_rain) {
-		parts.push('Overworld rain');
-	}
-
-	if (detail.turn_upside_down) {
-		parts.push('Upside down device');
-	}
-
-	if (detail.relative_physical_stats === 1) {
-		parts.push('Attack > Defense');
-	} else if (detail.relative_physical_stats === -1) {
-		parts.push('Defense > Attack');
-	}
-
-	if (detail.gender === 1) {
-		parts.push('Female only');
-	} else if (detail.gender === 2) {
-		parts.push('Male only');
-	}
-
-	return parts.length ? parts.join(' • ') : 'Special conditions';
-};
 
 export default function SpeciesInfo({ pokemonData, accentType }: SpeciesInfoProps) {
 	const [selectedLanguage, setSelectedLanguage] = useState<string>('en');

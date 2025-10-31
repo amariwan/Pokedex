@@ -1,9 +1,10 @@
 "use client";
 
 import dynamic from "next/dynamic";
+
 import type { PokemonGridProps } from "./PokemonGrid";
 
-const PokemonGrid = dynamic(() => import("./PokemonGrid").then((m) => m.PokemonGrid), {
+const PokemonGrid = dynamic<PokemonGridProps>(() => import("./PokemonGrid"), {
   ssr: false,
 });
 
