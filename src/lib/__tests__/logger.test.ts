@@ -16,11 +16,11 @@ describe('logger utility', () => {
 	afterEach(() => {
 		vi.restoreAllMocks();
 		vi.useRealTimers();
-		process.env.NODE_ENV = originalNodeEnv;
+		(process.env as any).NODE_ENV = originalNodeEnv;
 	});
 
 	test('emits debug logs in development mode', async () => {
-		process.env.NODE_ENV = 'development';
+		(process.env as any).NODE_ENV = 'development';
 		const logger = await importLogger();
 		const spy = vi.spyOn(console, 'debug').mockImplementation(() => {});
 
@@ -30,7 +30,7 @@ describe('logger utility', () => {
 	});
 
 	test('skips debug logs outside development', async () => {
-		process.env.NODE_ENV = 'production';
+		(process.env as any).NODE_ENV = 'production';
 		const logger = await importLogger();
 		const spy = vi.spyOn(console, 'debug').mockImplementation(() => {});
 
@@ -40,7 +40,7 @@ describe('logger utility', () => {
 	});
 
 	test('logs info and warn messages with context', async () => {
-		process.env.NODE_ENV = 'development';
+		(process.env as any).NODE_ENV = 'development';
 		const logger = await importLogger();
 
 		const infoSpy = vi.spyOn(console, 'info').mockImplementation(() => {});
@@ -54,7 +54,7 @@ describe('logger utility', () => {
 	});
 
 	test('logs error details when provided with Error instance', async () => {
-		process.env.NODE_ENV = 'development';
+		(process.env as any).NODE_ENV = 'development';
 		const logger = await importLogger();
 		const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 		const error = new Error('bad things');
@@ -67,7 +67,7 @@ describe('logger utility', () => {
 	});
 
 	test('logs error details when provided with unknown value', async () => {
-		process.env.NODE_ENV = 'development';
+		(process.env as any).NODE_ENV = 'development';
 		const logger = await importLogger();
 		const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 

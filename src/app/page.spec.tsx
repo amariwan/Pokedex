@@ -27,9 +27,24 @@ describe('Page', () => {
 	];
 
 	const mockPokemonDetails: PokemonData[] = [
-		{ name: 'bulbasaur', id: 1, sprites: { front_default: 'img1' }, types: [] } as PokemonData,
-		{ name: 'charmander', id: 2, sprites: { front_default: 'img2' }, types: [] } as PokemonData,
-		{ name: 'squirtle', id: 3, sprites: { front_default: 'img3' }, types: [] } as PokemonData,
+		{
+			name: 'bulbasaur',
+			id: 1,
+			sprites: { front_default: 'img1' },
+			types: [],
+		} as unknown as PokemonData,
+		{
+			name: 'charmander',
+			id: 2,
+			sprites: { front_default: 'img2' },
+			types: [],
+		} as unknown as PokemonData,
+		{
+			name: 'squirtle',
+			id: 3,
+			sprites: { front_default: 'img3' },
+			types: [],
+		} as unknown as PokemonData,
 	];
 
 	beforeEach(() => {

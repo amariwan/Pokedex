@@ -103,7 +103,7 @@ describe('Pokemon page route', () => {
 				front_default: 'front.png',
 				other: { 'official-artwork': { front_default: 'art-pikachu.png' } },
 			},
-		});
+		} as unknown as Partial<PokemonData>);
 
 		vi.mocked(getPokemon).mockResolvedValue(pokemon);
 
@@ -111,8 +111,8 @@ describe('Pokemon page route', () => {
 
 		expect(getPokemon).toHaveBeenCalledWith('pikachu');
 		expect(metadata.title).toBe('Pikachu · Pokédex');
-		expect(metadata.openGraph?.images?.[0]?.url).toBe('art-pikachu.png');
-		expect(metadata.twitter?.images?.[0]).toBe('art-pikachu.png');
+		expect((metadata.openGraph?.images as any)?.[0]?.url).toBe('art-pikachu.png');
+		expect((metadata.twitter?.images as any)?.[0]).toBe('art-pikachu.png');
 	});
 
 	it('omits social preview images when the artwork is unavailable', async () => {
@@ -122,7 +122,7 @@ describe('Pokemon page route', () => {
 				front_default: 'front.png',
 				other: { 'official-artwork': { front_default: null } },
 			},
-		});
+		} as unknown as Partial<PokemonData>);
 
 		vi.mocked(getPokemon).mockResolvedValue(pokemon);
 

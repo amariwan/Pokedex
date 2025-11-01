@@ -26,7 +26,8 @@
 		"test:coverage": "vitest run --coverage",
 		"test:e2e": "playwright test",
 		"test:all": "pnpm run test && pnpm run test:e2e",
-		"prepare": "husky"
+		"prepare": "husky install",
+		"check:ci": "pnpm run lint && pnpm run format:check && pnpm run type-check && pnpm run test:coverage"
 	},
 	"dependencies": {
 		"@radix-ui/react-aspect-ratio": "^1.1.7",

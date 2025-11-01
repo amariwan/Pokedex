@@ -30,7 +30,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with: { fetch-depth: 0 }
+        with:
+          fetch-depth: 0
 
       - name: Enable Corepack
         run: corepack enable
@@ -104,7 +105,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node: ['24.x']
+        node: ["24.x"]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -151,7 +152,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with: { fetch-depth: 0 }
+        with:
+          fetch-depth: 0
 
       - name: Enable Corepack
         run: corepack enable
