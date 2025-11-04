@@ -6,7 +6,7 @@
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-A modern, feature-rich Pokedex application built with Next.js 15, TypeScript, and TailwindCSS. Explore, search, and compare Pokemon with a beautiful, responsive interface!
+A modern, feature-rich Pokedex application built with Next.js 16, TypeScript, and TailwindCSS. Explore, search, and compare Pokemon with a beautiful, responsive interface!
 
 ## 🎯 Hacktoberfest Participation
 
